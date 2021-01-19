@@ -2,10 +2,20 @@
 # An * ensures that everything will be ignored.
 *
 # You can whitelist files/folders with !, these will not be ignored.
-!www
 !*.yaml
 !.gitignore
 !*.md
+!www/
+!www/images/
+!www/images/*
+!www/images/floorplan/
+!www/images/floorplan/*
+!www/images/icons/
+!www/images/icons/*
+!www/images/weather/
+!www/images/weather/*
+!www/js/
+!www/js/*
 
 # Ignore folders.
 .storage
@@ -16,4 +26,3 @@
 ip_bans.yaml
 secrets.yaml
 known_devices.yaml
-www/images/people/*
