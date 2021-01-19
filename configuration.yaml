@@ -245,7 +245,7 @@ sensor:
 # https://www.home-assistant.io/integrations/mitemp_bt/
 # https://github.com/home-assistant/core/issues/19326#issuecomment-551103628
   - platform: mitemp_bt
-    mac: '58:2D:34:31:3F:4A'
+    mac: !secret mitemp_bt_mac
     name: Xiaomi T&H Ble
     monitored_conditions:
       - temperature
@@ -285,7 +285,7 @@ sensor:
 # https://www.home-assistant.io/integrations/fritzbox_netmonitor/
   - platform: fritzbox_netmonitor
     name: 'FritbozNetMonitor'
-    host: '192.168.100.1' #il vostro ip del router
+    host: !secret ip_fritzbox
 
 
 # https://www.home-assistant.io/integrations/dht/
@@ -447,14 +447,14 @@ sensor:
 binary_sensor:
 # https://www.home-assistant.io/integrations/ping/
   - platform: ping
-    host: 192.168.100.110
+    host: !secret ip_samsung_ue40h6400
     name: TV Ping
     scan_interval: 5
     count: 2
 
   - platform: ping
     name: Internet Access
-    host: 8.8.8.8
+    host: !secret ip_server_dns
     scan_interval: 300
     count: 4
 
@@ -530,11 +530,11 @@ device_tracker:
     new_device_defaults:
       track_new_devices: true
     hosts:
-      iphone_di_fabio: 192.168.100.140
-      iphone_di_rosita: 192.168.100.141
-      iphone_di_giovanna: 192.168.100.142
-      iphone_di_graziella: 192.168.100.143
-      iphone_di_paolo: 192.168.100.144 
+      iphone_di_fabio: !secret ip_iphone_fabio
+      iphone_di_rosita: !secret ip_iphone_rosita
+      iphone_di_giovanna: !secret ip_iphone_giovanna
+      iphone_di_graziella: !secret ip_iphone_graziella
+      iphone_di_paolo: !secret ip_iphone_paolo
 
 
 
@@ -612,7 +612,7 @@ notify:
 ####################################################
 # https://github.com/rospogrigio/localtuya
 localtuya:
-  - host: 192.168.100.170
+  - host: !secret ip_sp_dryer
     device_id: !secret tuya_plug_01_id
     local_key: !secret tuya_plug_01_key
     friendly_name: Presa Asciugatrice
@@ -624,7 +624,7 @@ localtuya:
         current: 18
         current_consumption: 19
         voltage: 20
-  - host: 192.168.100.171
+  - host: !secret ip_sp_dishwasher
     device_id: !secret tuya_plug_02_id
     local_key: !secret tuya_plug_02_key
     friendly_name: Presa Lavastoviglie
