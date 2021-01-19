@@ -1,0 +1,1674 @@
+#############################################################################################################################################
+#                                                                                                                                           #
+#                                                              Dashboard Kiosk                                                              #
+#                                                                                                                                           #
+#############################################################################################################################################
+
+
+# https://github.com/thomasloven/hass-config/wiki/Misc-tricks
+anchors:
+
+  colors: &primary-color 'rgba(255, 255, 255, 0.9)'
+  colors: &secondary-color 'rgba(255, 255, 255, 0.7)'
+  colors: &third-color 'rgba(255, 255, 255, 0.3)'
+
+  colors: &bg-color 'rgba(42, 46, 48, 1)'
+  colors: &bg-highlight-color 'rgba(255, 255, 255, 0.05)'
+
+  icon-style: &icon-style
+    show_name: false
+    show_state: false
+    show_units: false
+    show_label: false
+    size: 60%
+    styles:
+      card:
+        - border-radius: 50%
+        - overflow: hidden
+        - width: 3.5vw
+        - height: 3.5vw
+        - box-shadow: '0px 0px 30px 0px rgba(0,0,0,0.4)'
+    state:
+      - value: 'on'
+        styles:
+          card:
+            - background-color: rgba(255,255,255,0.3)
+          icon:
+            - color: rgba(0,0,0,0.7)
+      - value: 'off'
+        styles:
+          card:
+            - background-color: rgba(0,0,0,0.3)  
+          icon:
+            - color: rgba(255,255,255,0.5)  
+    tap_action:
+      action: toggle
+
+
+
+  image-style: &image-style
+    mix-blend-mode: lighten
+    top: 50%
+    left: 50%
+    width: 100%
+
+  people-style: &people-style
+    background-color: 'rgba(255, 255, 255, 0.0)'
+    border-radius: 10vw
+    height: 4.5vw
+    width: 4.5vw
+    
+  menu-styles: &menu-styles
+    card:
+      - background-color: transparent
+      - border-radius: 50px
+      - color: *secondary-color
+      - direction: rtl
+      - box-shadow: unset
+      - padding: 6% 12%
+    name:
+      - align-self: middle
+      - font-weight: 500
+      - font-size: 16px
+      - justify-self: end
+    img_cell:
+      - justify-content: end
+    icon:
+      - color: *secondary-color
+      - margin: 0
+
+
+  menu-styles: &menu-active-styles
+    card:
+      - background-color: *bg-highlight-color
+      - border-radius: 50px
+      - color: *primary-color
+      - direction: rtl
+      - box-shadow: unset
+      - padding: 6% 12%
+    name:
+      - align-self: middle
+      - font-weight: 500
+      - font-size: 16px
+      - justify-self: end
+    img_cell:
+      - justify-content: end
+    icon:
+      - color: *primary-color
+      - margin: 0
+
+  #########################    BG IMAGE    #########################
+
+  main: &main-bg
+    type: picture-elements    
+    image: /local/images/blurred_bg.jpg?v=0.3
+    style: |
+      ha-card {
+        background: rgba(42, 46, 48, 1);
+        margin-top: 4px;
+        border-radius: 0;
+      }      
+
+
+  #########################    SIDEBAR Background    #########################
+
+  sidebar: &sidebar-bg
+    type: image
+    action: none
+    hold_action:
+      action: none
+    image: /local/images/transparent.png?v=0.3
+    style:
+      height: 100%
+      left: 11.73828125%
+      top: 50%
+      width: 23.4765625%
+      background: 'rgba(0,0,0,0.2)'
+    tap_action:
+      action: none
+
+  sidebar: &sidebar-bg-overlay
+    type: image
+    image: /local/images/transparent.png
+    style:
+      height: 45%
+      left: 19.45%
+      pointer-events: none
+      top: 86%
+      width: 8%
+      background: linear-gradient(90deg, rgba(19,22,24,0) 0%, rgba(19,22,24,1) 100%)
+    action: none
+
+
+  #########################    SIDEBAR Time and date    #########################
+
+  sidebar: &sidebar-time
+    type: state-label
+    entity: sensor.time
+    hold_action:
+      action: none
+    style:
+      color: *secondary-color
+      font-size: 5.41vw
+      font-weight: 200
+      left: 2.7%
+      letter-spacing: '-0.05vw'
+      max-width: 1px
+      top: 10%
+    tap_action:
+      action: none
+      
+  sidebar: &sidebar-date  
+    type: state-label
+    entity: sensor.date_string
+    hold_action:
+      action: none
+    style:
+      color: *third-color
+      font-size: 1.5vw
+      font-weight: 300
+      left: 18.1%
+      letter-spacing: '-0.05vw'
+      text-align: left
+      top: 16%
+      width: 30%
+    tap_action:
+      action: none
+      
+
+  #########################    SIDEBAR Menu Buttons    #########################
+      
+  sidebar: &sidebar-menu-1
+    type: custom:button-card
+    icon: mdi:floor-plan
+    name: Casa
+    layout: icon_name_state
+    size: 30%
+    styles:
+      <<: *menu-styles
+    style:
+      left: 11.7%
+      top: 25%
+      width: 20.5078125%
+      box-shadow: unset       
+    tap_action:
+      action: navigate
+      navigation_path: /dashboard-kiosk/floorplan
+    action: none
+
+  sidebar: &sidebar-menu-1-active
+    <<: *sidebar-menu-1
+    styles:
+      <<: *menu-active-styles
+    
+
+
+  sidebar: &sidebar-menu-2
+    type: custom:button-card
+    icon: mdi:google-circles-extended
+    name: Dispositivi
+    layout: icon_name_state
+    size: 30%
+    styles:
+      <<: *menu-styles
+    style:
+      left: 11.7%
+      top: 32%
+      width: 20.5078125%
+      box-shadow: unset       
+    tap_action:
+      action: navigate
+      navigation_path: /dashboard-kiosk/tasks
+    action: none
+
+  sidebar: &sidebar-menu-2-active
+    <<: *sidebar-menu-2
+    styles:
+      <<: *menu-active-styles
+
+
+  sidebar: &sidebar-menu-3
+    type: custom:button-card
+    icon: mdi:play-speed
+    name: Media player
+    layout: icon_name_state
+    size: 30%
+    styles:
+      <<: *menu-styles
+    style:
+      left: 11.7%
+      top: 39%
+      width: 20.5078125%
+      box-shadow: unset       
+    tap_action:
+      action: navigate
+      navigation_path: /dashboard-kiosk/player
+    action: none
+
+  sidebar: &sidebar-menu-3-active
+    <<: *sidebar-menu-3
+    styles:
+      <<: *menu-active-styles
+
+  sidebar: &sidebar-menu-4
+    type: custom:button-card
+    icon: mdi:alarm-light-outline
+    name: Allarme
+    layout: icon_name_state
+    size: 30%
+    styles:
+      <<: *menu-styles
+    style:
+      left: 11.7%
+      top: 46%
+      width: 20.5078125%
+      box-shadow: unset       
+    tap_action:
+      action: navigate
+      navigation_path: /dashboard-kiosk/alarm
+    action: none
+
+  sidebar: &sidebar-menu-4-active
+    <<: *sidebar-menu-4
+    styles:
+      <<: *menu-active-styles
+
+
+  sidebar: &sidebar-menu-5
+    type: custom:button-card
+    icon: mdi:speedometer
+    name: Statistiche
+    layout: icon_name_state
+    size: 30%
+    styles:
+      <<: *menu-styles
+    style:
+      left: 11.7%
+      top: 53%
+      width: 20.5078125%
+      box-shadow: unset       
+    tap_action:
+      action: navigate
+      navigation_path: /dashboard-kiosk/stats
+    action: none  
+
+  sidebar: &sidebar-menu-5-active
+    <<: *sidebar-menu-5
+    styles:
+      <<: *menu-active-styles
+
+
+  #########################    SIDEBAR People at home    #########################
+
+  sidebar: &sidebar-person-fabio
+    type: image
+    entity: person.fabio
+    state_image:
+      home: /local/images/people/fabio_bw_in.png
+      not_home: /local/images/people/fabio_bw_out.png
+    style:
+      left: 5.8%
+      top: 65%
+      <<: *people-style
+    tap_action: none
+    action: none
+          
+  sidebar: &sidebar-person-rosita
+    type: image
+    entity: person.rosita
+    state_image:
+      home: /local/images/people/rosita_bw_in.png
+      not_home: /local/images/people/rosita_bw_out.png
+    style:  
+      left: 10.8%
+      top: 65%
+      <<: *people-style
+    tap_action: none
+    action: none
+  
+  sidebar: &sidebar-person-giovanna    
+    type: image
+    entity: person.giovanna
+    state_image:
+      home: /local/images/people/giovanna_bw_in.png
+      not_home: /local/images/people/giovanna_bw_out.png
+    style:
+      left: 5.8%
+      top: 72%
+      <<: *people-style
+    tap_action: none
+    action: none
+
+  sidebar: &sidebar-person-graziella
+    type: image
+    entity: person.graziella
+    state_image:
+      home: /local/images/people/graziella_bw_in.png
+      not_home: /local/images/people/graziella_bw_out.png
+    style:
+      left: 10.8%
+      top: 72%
+      <<: *people-style
+    tap_action: none
+    action: none
+
+  sidebar: &sidebar-person-paolo
+    type: image
+    entity: person.paolo
+    state_image:
+      home: /local/images/people/paolo_bw_in.png
+      not_home: /local/images/people/paolo_bw_out.png
+    style:
+      left: 15.8%
+      top: 72%
+      <<: *people-style
+    tap_action: none
+    action: none
+
+
+  #########################    SIDEBAR Mini Weather card    #########################
+
+
+  sidebar: &sidebar-weather
+    # https://github.com/kalkih/simple-weather-card
+    type: 'custom:simple-weather-card'
+    entity: weather.casa
+    name: ' '
+    backdrop: false
+    style: |
+      :host {
+        left: 11.4%;
+        top:  82.6%;
+        width: 17%;
+        height: 5% !important;
+        overflow: hidden;
+        height: 8.5vw;
+        background: none  !important;
+        box-shadow: none !important;
+        font-size: 1vw !important;
+
+        --primary-text-color: rgba(255,255,255,0.7);
+      }
+      ha-card {
+        background: none  !important;
+        box-shadow: none !important;
+        flex-flow: row-reverse !important;
+        padding: 0 !important;
+        font-size: 1.3vw !important;
+        font-weight: 300 !important;
+      }
+      .weather__info--add{
+        display : none !important;
+      }
+      .weather__info{
+        flex-grow: 1;
+        min-height: 0 !important;
+        height: 3.4vw;
+        margin-left: 0.6vw;
+      }
+      .weather__icon{
+        margin-right:0.5% !important;
+        margin-top: 0%;
+        width: 3vw !important;
+        height: 3vw !important;
+        flex: 0 0 3vw !important;
+        opacity: 0.7;
+      }
+    tap_action:
+      action: navigate
+      navigation_path: /dashboard-kiosk/weather
+      
+
+  #########################    SIDEBAR Minigraph to show temperature inside and out    #########################
+      
+  sidebar: &sidebar-temperature
+    type: 'custom:mini-graph-card'
+    entities:
+      - sensor.xiaomi_t_h_ble_temperature
+      - sensor.weather_temperature
+    icon: 'mdi:home-thermometer-outline'
+    show:
+      icon: true
+      legend: false
+      name: false
+    color_thresholds:
+      - color: '#4d90ff'
+        value: 0
+      - color: '#4dd2ff'
+        value: 10
+      - color: '#fbc00b'
+        value: 20
+      - color: '#ffa31a'
+        value: 24
+      - color: '#ff1a1a'
+        value: 28
+    style: |
+      :host {
+        left: 11.6%;
+        top:  92.6%;
+        width: 23.5%;
+        overflow: hidden;
+        height: 15%;
+        background: none !important;
+        box-shadow: none !important;
+
+        --paper-item-icon-color: rgba(255,255,255,0.7);
+        --primary-text-color: rgba(255,255,255,0.7);
+      }
+      .header {
+        font-size: 1vw;
+        position: absolute !important;
+        width: 5% !important;
+        padding: 0 !important;
+        right: 20% !important;
+        top: 15% !important;
+      }
+      ha-card {
+        background: none  !important;
+        padding: 0 !important;
+      }
+      .icon > ha-icon {
+        width:1.8vw !important;
+        height:1.8vw !important;
+      }
+      .state__time{
+        font-size:0.9vw !important;
+        margin-top: 0.2vw;
+        font-weight: 300 !important;
+        opacity: 0.4 !important;
+      }
+      .graph{
+        color: rgba(0,0,0,0.9);
+      }
+      .states {
+        font-size: 0.8vw !important;
+        font-weight: 300 !important;
+        padding: 1vw 0vw 0vw 0vw  !important;
+        margin: auto !important;
+        width: 68%;
+      }
+    tap_action:
+      action: navigate
+      navigation_path: /dashboard-floorplan/4
+
+      
+  
+
+
+
+
+custom_header:
+  # https://github.com/maykar/custom-header/issues/269#issuecomment-703093693 fix kiosk mode bottom space
+  view_css: 'margin-top: -100px !important; min-height: calc(100vh - 100px) !important;'
+  panel_view_css: 'margin-top: -100px !important; min-height: calc(100vh - 100px) !important;'
+  exceptions:
+    - conditions:
+        media_query: "(max-width: 1024px)"
+      config:
+        kiosk_mode: true
+
+
+title: Kiosk
+views:
+
+  #############################################################################################################################################
+  #                                                                                                                                           #
+  #                                                              Floorplan View                                                               #
+  #                                                                                                                                           #
+  #############################################################################################################################################
+
+  - title: Floorplan
+    path: floorplan
+    panel: true
+    icon: mdi:floor-plan
+    cards:
+    - type: picture-elements
+      image: /local/images/floorplan/floor_lights_off.png?v=0.3
+      style: |
+            ha-card:first-child {
+              background: url(/local/images/blurred_bg.jpg?v=0.3) no-repeat center center;
+              background-size: cover;
+              margin-top: 4px;
+              border-radius: 0;
+            }
+      elements:
+
+
+      #########################    INDIVIDUAL LIGHTS - BLENDED IMAGE OVERLAYS    #########################
+
+      # Ripostiglio
+      - type: image
+        entity: switch.shellyswitch25_c467b1_channel_1
+        tap_action: none
+        hold_action: none
+        state_image:
+          "off": /local/images/floorplan/transparent_square.png
+          "on": /local/images/floorplan/floor_lights_boxroom_on.png?v=0.3
+          "unavailable": /local/images/floorplan/transparent_square.png
+        style:
+          <<: *image-style
+
+      # Ingresso
+      - type: image
+        entity: switch.shellyswitch25_c4e381_channel_1
+        tap_action: none
+        hold_action: none
+        state_image:
+          "off": /local/images/floorplan/transparent_square.png
+          "on": /local/images/floorplan/floor_lights_entrance_on.png?v=0.3
+          "unavailable": /local/images/floorplan/transparent_square.png
+        style:
+          <<: *image-style
+
+      # Cucina
+      - type: image
+        entity: switch.shellyswitch25_c469f5_channel_1
+        tap_action: none
+        hold_action: none
+        state_image:
+          "off": /local/images/floorplan/transparent_square.png
+          "on": /local/images/floorplan/floor_lights_kitchen_on.png?v=0.3
+          "unavailable": /local/images/floorplan/transparent_square.png
+        style:
+          <<: *image-style
+
+      # Soggiorno
+      - type: image
+        entity: switch.shellyswitch25_e5a302_channel_1
+        tap_action: none
+        hold_action: none
+        state_image:
+          "off": /local/images/floorplan/transparent_square.png
+          "on": /local/images/floorplan/floor_lights_living_int_on.png?v=0.3
+          "unavailable": /local/images/floorplan/transparent_square.png
+        style:
+          <<: *image-style
+      
+      - type: image
+        entity: switch.shellyswitch25_e5a302_channel_2
+        tap_action: none
+        hold_action: none
+        state_image:
+          "off": /local/images/floorplan/transparent_square.png
+          "on": /local/images/floorplan/floor_lights_living_ext_on.png?v=0.3
+          "unavailable": /local/images/floorplan/transparent_square.png
+        style:
+          <<: *image-style
+
+      - type: image
+        entity: light.33882720600194e74bc3
+        tap_action: none
+        hold_action: none
+        state_image:
+          "off": /local/images/floorplan/transparent_square.png
+          "on": /local/images/floorplan/floor_lights_living_lamp_on.png?v=0.3
+          "unavailable": /local/images/floorplan/transparent_square.png
+        style:
+          <<: *image-style
+
+      # Corridoio
+      - type: image
+        entity: switch.shellyswitch25_c4e381_channel_2
+        tap_action: none
+        hold_action: none
+        state_image:
+          "off": /local/images/floorplan/transparent_square.png
+          "on": /local/images/floorplan/floor_lights_hallway_on.png?v=0.3
+          "unavailable": /local/images/floorplan/transparent_square.png
+        style:
+          <<: *image-style       
+
+      # Camera
+      - type: image
+        entity: switch.shelly1_f3a160
+        tap_action: none
+        hold_action: none
+        state_image:
+          "off": /local/images/floorplan/transparent_square.png
+          "on": /local/images/floorplan/floor_lights_bedroom_on.png?v=0.3
+          "unavailable": /local/images/floorplan/transparent_square.png
+        style:
+          <<: *image-style
+
+      # Cameretta
+      - type: image
+        entity: switch.shelly1_c4eeb1
+        tap_action: none
+        hold_action: none
+        state_image:
+          "off": /local/images/floorplan/transparent_square.png
+          "on": /local/images/floorplan/floor_lights_bedroom_child_on.png?v=0.3
+          "unavailable": /local/images/floorplan/transparent_square.png
+        style:
+          <<: *image-style
+
+      # Bagno
+      - type: image
+        entity: switch.shelly1_c4263c
+        tap_action: none
+        hold_action: none
+        state_image:
+          "off": /local/images/floorplan/transparent_square.png
+          "on": /local/images/floorplan/floor_lights_bathroom_on.png?v=0.3
+          "unavailable": /local/images/floorplan/transparent_square.png
+        style:
+          <<: *image-style
+
+      # Bagnetto
+      - type: image
+        entity: switch.shelly1_c42478
+        tap_action: none
+        hold_action: none
+        state_image:
+          "off": /local/images/floorplan/transparent_square.png
+          "on": /local/images/floorplan/floor_lights_bathroom_child_on.png?v=0.3
+          "unavailable": /local/images/floorplan/transparent_square.png
+        style:
+          <<: *image-style
+
+
+
+      #########################    INDIVIDUAL LIGHTS - TOGGLES    #########################
+
+      # Ripostiglio
+      - type: custom:button-card
+        entity: group.boxroom_lights
+        icon: 'mdi:ceiling-light'
+        style:
+          top: 89%
+          left: 66%
+        <<: *icon-style
+
+      # Ingresso
+      - type: custom:button-card
+        entity: switch.shellyswitch25_c4e381_channel_1
+        icon: 'mdi:ceiling-light'
+        style:
+          top: 73%
+          left: 65%
+        <<: *icon-style
+
+      # Cucina
+      - type: custom:button-card
+        entity: switch.shellyswitch25_c469f5_channel_1
+        icon: 'mdi:ceiling-light'
+        style:
+          top: 49%
+          left: 80.5%
+        <<: *icon-style
+
+      # Soggiorno
+      - type: custom:button-card
+        entity: switch.shellyswitch25_e5a302_channel_1
+        icon: 'mdi:ceiling-light'
+        style:
+          top: 53%
+          left: 63%
+        <<: *icon-style
+
+      - type: custom:button-card
+        entity: switch.shellyswitch25_e5a302_channel_2
+        icon: 'mdi:ceiling-light'
+        style:
+          top: 53%
+          left: 44%
+        <<: *icon-style
+
+      - type: custom:button-card
+        entity: light.33882720600194e74bc3
+        icon: 'mdi:floor-lamp'
+        hold_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            card:
+              type: 'custom:light-entity-card'
+              color_temp: true
+              entity: light.33882720600194e74bc3
+              hide_header: true
+              persist_features: true
+              smooth_color_wheel: true
+              style: |
+                :host{
+                  height: 100%;
+                  z-index: 0;  
+
+                  --primary-text-color: rgba(255, 255, 255, 0.9);
+                  --ha-card-background: rgba(0, 0, 0, 0.9);
+                }
+                ha-card {
+                  background: transparent !important;
+                  box-shadow: none !important;
+                }
+            deviceID:
+              - this
+            title: Lampada
+            style: |
+              :host{
+                --primary-text-color: rgba(255, 255, 255, 0.9);
+                --secondary-background-color: rgba(0, 0, 0, 0.9);
+              }
+              .content{
+                background: rgba(0, 0, 0, 0.9) !important;
+              }
+        style:
+          top: 40%
+          left: 48%
+        <<: *icon-style
+
+      # Corridoio
+      - type: custom:button-card
+        entity: switch.shellyswitch25_c4e381_channel_2
+        icon: 'mdi:ceiling-light'
+        style:
+          top: 34%
+          left: 64%
+        <<: *icon-style
+
+      # Camera
+      - type: custom:button-card
+        entity: switch.shelly1_f3a160
+        icon: 'mdi:ceiling-light'
+        style:
+          top: 23%
+          left: 81%
+        <<: *icon-style
+
+      # Cameretta
+      - type: custom:button-card
+        entity: switch.shelly1_c4eeb1
+        icon: 'mdi:ceiling-light'
+        style:
+          top: 23%
+          left: 40%
+        <<: *icon-style     
+
+      # Bagno
+      - type: custom:button-card
+        entity: switch.shelly1_c4263c
+        icon: 'mdi:ceiling-light'
+        style:
+          top: 18%
+          left: 64%
+        <<: *icon-style
+
+      # Bagnetto
+      - type: custom:button-card
+        entity: switch.shelly1_c42478
+        icon: 'mdi:ceiling-light'
+        style:
+          top: 18%
+          left: 52.5%
+        <<: *icon-style
+
+      #########################    INDIVIDUAL SENSORS    #########################
+
+      - type: state-label
+        entity: sensor.xiaomi_t_h_ble_temperature
+        style:
+          top: 37%
+          left: 31.5%
+          color: *secondary-color
+          height: 50px
+          width: 50px
+          text-align: center
+          background-color: transparent
+          font-size: 11px
+          font-weight: bold
+          line-height: 36px
+
+
+      - type: 'custom:bar-card'
+        entity: sensor.lights_consumption
+        icon: mdi:lightbulb-group
+        height: 6px
+        min: 0
+        max: 125
+        decimal: 1
+        animation:
+          state: on
+          speed: 5
+        positions:
+          indicator: off
+          icon: inside
+        severity:
+          - color: '#8a7b01'
+            from: 0
+            to: 25
+          - color: '#ab9901'
+            from: 25
+            to: 50
+          - color: '#c5b000'
+            from: 50
+            to: 75
+          - color: '#dfc700'
+            from: 75
+            to: 100
+          - color: '#ffe402'
+            from: 100
+            to: 125
+        style: |
+          :host {
+            left: 40%;
+            top: 84%;
+            width: 30%;
+            height: 6%;
+            overflow: hidden;
+
+            --primary-text-color: rgba(255,255,255, 0.9);
+            --icon-color: rgba(255,255,255, 0.9);
+            --bar-card-border-radius: 4px;
+            --paper-font-body1_-_font-size: 1.3vw;
+            --mdc-icon-size: 16px;
+            --ha-card-background: transparent;
+            --ha-card-box-shadow: unset;
+          }
+          ha-card{
+                box-shadow: unset;
+                padding: 0 !important;
+          }
+          bar-card-value{
+            margin: 4px 10px;
+          }
+          bar-card-backgroundbar, bar-card-currentbar {
+            margin-top: 20px;
+          }
+
+
+
+
+      - type: 'custom:bar-card'
+        entity: sensor.shellyem_e45b64_channel_1_power
+        icon: mdi:flash
+        height: 6px
+        min: 0
+        max: 3000
+        decimal: 1
+        animation:
+          state: on
+          speed: 5
+        positions:
+          indicator: off
+          icon: inside
+        severity:
+          - color: '#2acaa6'
+            from: 0
+            to: 500
+          - color: '#7dca2a'
+            from: 500
+            to: 1000
+          - color: '#b2ca2a'
+            from: 1000
+            to: 2000
+          - color: '#fbc00b'
+            from: 2000
+            to: 2500
+          - color: '#ffa31a'
+            from: 2500
+            to: 2900
+          - color: '#ca392a'
+            from: 2900
+            to: 4000
+        style: |
+          :host {
+            left: 40%;
+            top: 94%;
+            width: 30%;
+            height: 6%;
+            overflow: hidden;
+
+            --primary-text-color: rgba(255,255,255, 0.9);
+            --icon-color: rgba(255,255,255, 0.9);
+            --bar-card-border-radius: 4px;
+            --paper-font-body1_-_font-size: 1.3vw;
+            --mdc-icon-size: 16px;
+            --ha-card-background: transparent;
+            --ha-card-box-shadow: unset;
+          }
+          ha-card{
+                background: transparent;
+                box-shadow: unset;
+                padding: 0 !important;
+          }
+          bar-card-value{
+            margin: 4px 10px;
+          }
+          bar-card-backgroundbar, bar-card-currentbar {
+            margin-top: 20px;
+          }
+
+
+
+
+      #################################################################
+      #                                                               #
+      #                             SIDEBAR                           #
+      #                                                               #
+      #################################################################
+      
+      - <<: *sidebar-bg
+
+      - <<: *sidebar-time
+      - <<: *sidebar-date
+
+      - <<: *sidebar-menu-1-active
+      - <<: *sidebar-menu-2
+      - <<: *sidebar-menu-3
+      - <<: *sidebar-menu-4
+      #- <<: *sidebar-menu-5
+
+      - <<: *sidebar-person-fabio
+      - <<: *sidebar-person-rosita
+      - <<: *sidebar-person-giovanna
+      - <<: *sidebar-person-graziella
+      - <<: *sidebar-person-paolo      
+
+      - <<: *sidebar-weather
+      - <<: *sidebar-temperature
+      - <<: *sidebar-bg-overlay
+
+
+  #############################################################################################################################################
+  #                                                                                                                                           #
+  #                                                   All Devices (Entities) Homekit Style View                                               #
+  #                                                                                                                                           #
+  #############################################################################################################################################
+
+  - title: Tasks     
+    path: tasks   
+    icon: 'mdi:home'
+    panel: true
+    cards:
+      - <<: *main-bg
+        elements:
+      
+            #################################################################
+            #                                                               #
+            #                     Homekit Styled Card:                      #
+            #         https://github.com/DBuit/Homekit-panel-card           #
+            #                                                               #
+            #################################################################
+            
+          - type: 'custom:homekit-card'
+            home: false
+            enableColumns: true
+            useBrightness: false
+            useTemperature: false
+            titleColor: "#FFF"
+            statePositionTop: true
+            popup:
+              brightnessHeight: 350px
+              brightnessWidth: 130px
+              scenesInARow: 2
+              switchHeight: 300px
+              switchWidth: 110px
+              type: 'custom:light-popup-card'
+            style: |
+              :host {
+                height: 100%;
+                left: 64.5%;
+                top: 50%;
+                width: 77%;
+
+                --tile-background: rgba(255, 255, 255, 0.1);
+                --tile-on-background: rgba(255, 255, 255, 1);
+
+                --tile-name-text-color: rgba(255, 255, 255, 0.9);
+                --tile-on-name-text-color: rgba(0, 0, 0, 0.9);
+
+                --tile-state-text-color: rgba(255, 255, 255, 0.5);
+                --tile-on-state-text-color: rgba(0, 0, 0, 0.7);
+
+                --tile-icon-size: 34px;
+                --tile-icon-color: rgba(255, 255, 255, 0.9);
+                --tile-on-icon-color: rgba(0, 0, 0, 0.9);
+
+                --tile-border-radius: 8px;
+                --tile-width: 88px;
+                --tile-height: 88px;
+              }
+              .row .col{
+                padding: 0 8px !important;
+              }
+              .row{
+                padding-top: 10px !important;
+              }
+              .card-title{
+                padding: 10px 4px 4px 4px!important;
+              }
+              .button{
+                box-shadow:unset !important;
+                margin: 0 1px 5px 0 !important;
+              }
+              .button.no-padding{
+                height: 110px !important;
+              }
+              homekit-button .name{
+                font-size: 1.3vw !important;
+              }
+              homekit-button .state{
+                font-size: 1.3vw !important;
+                margin-bottom: -3px;
+              }
+
+            rows:
+
+              - row: 1
+                columns:
+                  - column: 1
+                    entities:
+                      - entities:
+                          - entity: switch.shellyswitch25_c4e381_channel_1
+                            icon: 'mdi:track-light'
+                            image: /local/images/icons/spotlight_multiple__on.svg?v=0.3
+                            offImage: /local/images/icons/spotlight_multiple__off.svg?v=0.3
+              
+                          - entity: group.boxroom_lights
+                            image: /local/images/icons/led_applique__on.svg?v=0.3
+                            offImage: /local/images/icons/led_applique__off.svg?v=0.3
+
+                          - entity: switch.bf6851b011ec5a759drz6s
+                            icon: 'mdi:power-socket-eu'
+                            image: /local/images/icons/plug__on.svg?v=0.3
+                            offImage: /local/images/icons/plug__off.svg?v=0.3
+             
+                        title: Ingresso
+                    tileOnRow: 2
+
+                  - column: 2
+                    entities:
+                      - entities:
+                          - entity: switch.shellyswitch25_e5a302_channel_1
+                            icon: 'mdi:ceiling-light'
+                            image: /local/images/icons/chandelier_1__on.svg?v=0.3
+                            offImage: /local/images/icons/chandelier_1__off.svg?v=0.3
+
+                          - entity: switch.shellyswitch25_e5a302_channel_2
+                            icon: 'mdi:ceiling-light'
+                            image: /local/images/icons/chandelier_1__on.svg?v=0.3
+                            offImage: /local/images/icons/chandelier_1__off.svg?v=0.3
+
+                          - entity: light.33882720600194e74bc3
+                            slider: true
+                            icon: 'mdi:floor-lamp'
+                            image: /local/images/icons/floor_lamp__on.svg?v=0.3
+                            offImage: /local/images/icons/floor_lamp__off.svg?v=0.3
+
+                          - entity: media_player.samsung_tv_ue40h6400  
+                            icon: mdi:television
+                            image: /local/images/icons/tv__on.svg?v=0.3
+                            offImage: /local/images/icons/tv__off.svg?v=0.3
+
+                        title: Soggiorno
+                    tileOnRow: 2
+
+                  - column: 3
+                    entities:
+                      - entities:
+                          - entity: switch.shellyswitch25_c469f5_channel_1
+                            icon: 'mdi:ceiling-light'
+                            image: /local/images/icons/chandelier_2__on.svg?v=0.3
+                            offImage: /local/images/icons/chandelier_2__off.svg?v=0.3
+
+                          - entity: cover.shellyswitch25_e59f68
+                            image: /local/images/icons/roller_shutter__open.svg?v=0.3
+                            offImage: /local/images/icons/roller_shutter__off.svg?v=0.3
+
+                          - entity: sensor.shellygas_50029178b441_gas_concentration
+                            hideState: true;
+                            image: /local/images/icons/sensor_gas__on.svg?v=0.3
+                            offImage: /local/images/icons/sensor_gas__off.svg?v=0.3
+
+                        title: Cucina
+                    tileOnRow: 2
+                
+              - row: 2
+                columns:
+                  - column: 1
+                    entities:
+                      - entities:
+                          - entity: switch.shelly1_f3a160
+                            icon: 'mdi:ceiling-light'
+                            image: /local/images/icons/chandelier_lume_big__on.svg?v=0.3
+                            offImage: /local/images/icons/chandelier_lume_big__on.svg?v=0.3
+
+                          - entity: switch.shellyswitch25_c4e381_channel_2
+                            icon: 'mdi:track-light'
+                            image: /local/images/icons/spotlight_tube__on.svg?v=0.3
+                            offImage: /local/images/icons/spotlight_tube__off.svg?v=0.3
+
+                          - entity: switch.shelly1_c4eeb1
+                            icon: 'mdi:ceiling-light'
+                            image: /local/images/icons/chandelier_lume__on.svg?v=0.3
+                            offImage: /local/images/icons/chandelier_lume__off.svg?v=0.3
+
+                        title: Camere da letto
+                    tileOnRow: 2
+
+                  - column: 2
+                    entities:
+                      - entities:
+                          - entity: switch.shelly1_c4263c
+                            icon: 'mdi:ceiling-light'
+                            image: /local/images/icons/led_frame_rect_h__on.svg?v=0.3
+                            offImage: /local/images/icons/led_frame_rect_h__off.svg?v=0.3
+
+                          - entity: switch.shelly1_c42478
+                            icon: 'mdi:ceiling-light'
+                            image: /local/images/icons/led_frame_rect_h__on.svg?v=0.3
+                            offImage: /local/images/icons/led_frame_rect_h__off.svg?v=0.3
+
+                          - entity: binary_sensor.shellyflood_c8b7b7_flood
+                            hideState: true
+                            image: /local/images/icons/sensor_water__on.svg?v=0.3
+                            offImage: /local/images/icons/sensor_water__on.svg?v=0.3  
+
+                          - entity: sensor.lavatrice
+                            hideState: true
+                            
+                                        
+                        title: Bagni
+                    tileOnRow: 2
+
+                  - column: 3
+                    entities:
+                      - entities:
+                          - entity: switch.presa_asciugatrice
+                            icon: 'mdi:power-socket-eu'
+                            image: /local/images/icons/plug__on.svg?v=0.3
+                            offImage: /local/images/icons/plug__off.svg?v=0.3
+
+                          - entity: switch.presa_lavastoviglie
+                            icon: 'mdi:power-socket-eu'
+                            image: /local/images/icons/plug__on.svg?v=0.3
+                            offImage: /local/images/icons/plug__off.svg?v=0.3
+
+                          - entity: switch.bf99cef22ec6683bbbnhjv
+                            image: /local/images/icons/plug__on.svg?v=0.3
+                            offImage: /local/images/icons/plug__off.svg?v=0.3
+
+                          - entity: switch.02283024dc4f225abec8
+                            image: /local/images/icons/plug__on.svg?v=0.3
+                            offImage: /local/images/icons/plug__off.svg?v=0.3
+
+                        title: Prese
+                    tileOnRow: 2
+
+              - row: 3
+                columns:
+                  - column: 1
+                    entities:
+                      - entities:
+                          - card: custom:mini-graph-card
+                            noPadding: true
+                            wider: true
+                            cardOptions:
+                              entities:
+                                - sensor.shellyem_e45b64_channel_1_power
+                        title: Generale
+                    tileOnRow: 2
+                        
+                  - column: 2 
+                    entities:  
+                      - entities:           
+                          - entity: group.all_lights
+                            icon: 'mdi:home'
+                            image: /local/images/icons/led_lights__on.svg?v=0.3
+                            offImage: /local/images/icons/led_lights__off.svg?v=0.3
+
+                        title: Gruppi
+                    tileOnRow: 2
+
+            
+          #################################################################
+          #                                                               #
+          #                             SIDEBAR                           #
+          #                                                               #
+          #################################################################
+          
+          - <<: *sidebar-bg
+
+          - <<: *sidebar-time
+          - <<: *sidebar-date
+
+          - <<: *sidebar-menu-1
+          - <<: *sidebar-menu-2-active
+          - <<: *sidebar-menu-3
+          - <<: *sidebar-menu-4
+          #- <<: *sidebar-menu-5
+
+          - <<: *sidebar-person-fabio
+          - <<: *sidebar-person-rosita
+          - <<: *sidebar-person-giovanna
+          - <<: *sidebar-person-graziella
+          - <<: *sidebar-person-paolo      
+
+          - <<: *sidebar-weather
+          - <<: *sidebar-temperature
+          - <<: *sidebar-bg-overlay            
+
+
+  #############################################################################################################################################
+  #                                                                                                                                           #
+  #                                                   Now Playing Media View                                                                  #
+  #                                                                                                                                           #
+  #############################################################################################################################################
+
+  - title: Media     
+    path: player   
+    icon: mdi:play-speed
+    panel: true
+    cards:
+      - <<: *main-bg
+        elements:
+        
+          # https://github.com/kalkih/mini-media-player
+        
+          - type: 'custom:mini-media-player'
+            entity: media_player.spotify_fabio
+            artwork: full-cover
+            background: /local/images/spotify_background.png?v=0.3
+            volume_stateless: true
+            hide:
+              power: true
+              icon: true
+              name: true
+              source: true
+              progress: false
+              runtime: false
+              volume: false
+            style: |
+              :host {
+                left: 46% !important;
+                top: 38% !important;
+                width: 39% !important;
+                height: 62.3% !important;
+                --ha-card-background: rgba(255,255,255,0.05);
+              }
+              ha-card{
+                border-radius: 1vw !important;
+                overflow: hidden !important;
+                height: 100%;
+              }
+              .mmp-player{
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+              }
+              :host #primaryProgress{
+                background: #474A52 !important; 
+              }
+            
+          
+        
+         # https://github.com/custom-cards/spotify-card
+          - type: 'custom:spotify-card'
+            limit: 18
+            display_style: grid
+            always_play_random_song: false   
+            device: 'Echo Plus di fabio'
+            default_device: 'Echo Plus di fabio'
+            filter_devices: 
+              - .*Tina
+              - .*Stefania
+              - .*Graziella
+              - Web.*
+              - Ovunque
+            name:
+            style: |
+              :host {
+                left: 82%; 
+                top: 49%;
+                width: 29%;
+                height: 85%;
+                border-radius: 1vw;
+
+                --primary-text-color: rgba(255,255,255,.9);
+              }
+              ha-card{
+                background: transparent;
+                box-shadow: unset;
+                padding: 0 !important;
+              }
+              #header{
+                display:none !important;
+              }
+              #content{
+                border:none !important;
+                background: transparent !important;
+              }
+              #footer{
+                background: rgba(255,255,255,0.1);
+                padding: 6px 8px !important;
+                border-radius: 6px;
+                margin-top: 10px;
+              }
+              .dropdown-content{
+                color: #000;
+              }
+              .playback-controls{
+                display:none !important;    
+              }
+              .mediaplayer_speaker_icon{
+                padding: 6px !important;
+              }
+              #header-track{
+                display:none;
+              }
+              .list-item > p{
+                white-space: nowrap; 
+                overflow: hidden;
+              }
+              .list-item{
+                border-radius: 0.2vw;
+                overflow:hidden;
+                border:none !important;
+                margin-bottom:2px;
+              }
+              .list-item{
+                padding: 5px;
+              }
+              .list-item.playing, .list-item:hover{
+                background: rgba(255, 255, 255, 0.1) !important;
+              }
+            
+        
+        
+        #################################################################
+        #                                                               #
+        #                             SIDEBAR                           #
+        #                                                               #
+        #################################################################  
+
+          - <<: *sidebar-bg
+
+          - <<: *sidebar-time
+          - <<: *sidebar-date
+
+          - <<: *sidebar-menu-1
+          - <<: *sidebar-menu-2
+          - <<: *sidebar-menu-3-active
+          - <<: *sidebar-menu-4
+          #- <<: *sidebar-menu-5
+
+          - <<: *sidebar-person-fabio
+          - <<: *sidebar-person-rosita
+          - <<: *sidebar-person-giovanna
+          - <<: *sidebar-person-graziella
+          - <<: *sidebar-person-paolo      
+
+          - <<: *sidebar-weather
+          - <<: *sidebar-temperature
+          - <<: *sidebar-bg-overlay      
+
+
+
+  #############################################################################################################################################
+  #                                                                                                                                           #
+  #                                                               Alarm View                                                                  #
+  #                                                                                                                                           #
+  #############################################################################################################################################
+
+  - title: Allarme     
+    path: alarm   
+    icon: mdi:alarm-light-outline
+    panel: true
+    cards:
+      - <<: *main-bg
+        elements:
+        
+          # https://github.com/JumpMaster/custom-lovelace/tree/master/alarm_control_panel-card
+        
+          - type: 'custom:alarm_control_panel-card'
+            entity: alarm_control_panel.ismartalarm
+            scale: 10px
+            states:
+                - arm_home
+                - arm_away
+                - arm_night
+            style: |
+              :host {
+                left: 61.5%;
+                top:  51%;
+                width: 70%;
+                overflow: hidden;
+                height: 80%;
+                background: none !important;
+                box-shadow: none !important;
+
+                --mdc-icon-size: 50px;
+                --mdc-theme-primary: rgba(255,255,255,.9);
+                --primary-text-color: rgba(255,255,255,.9);
+                --mdc-button-outline-color: rgba(255,255,255,.9);
+                --mdc-typography-button-font-size: 1.3vw;
+              }
+              ha-card{
+                background: transparent;
+                box-shadow: unset;
+                padding: 0 !important;
+              }
+              ha-label-badge-icon{
+                position: unset;
+                top: unset;
+                right: unset;
+                left: unset;
+                bottom: unset;
+                display: flex;
+                justify-content: center;
+                margin:  0 0 30px 0;
+              }
+              .card-header{
+                text-align: center;
+              }
+              .label-badge{
+                background: transparent;
+                width:80px;
+                height:80px;
+              }
+              .label-badge .value{
+                height: 100%;
+              }
+              ha-icon{
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              }
+              
+                
+
+        #################################################################
+        #                                                               #
+        #                             SIDEBAR                           #
+        #                                                               #
+        #################################################################  
+
+          - <<: *sidebar-bg
+
+          - <<: *sidebar-time
+          - <<: *sidebar-date
+
+          - <<: *sidebar-menu-1
+          - <<: *sidebar-menu-2
+          - <<: *sidebar-menu-3
+          - <<: *sidebar-menu-4-active
+          #- <<: *sidebar-menu-5
+
+          - <<: *sidebar-person-fabio
+          - <<: *sidebar-person-rosita
+          - <<: *sidebar-person-giovanna
+          - <<: *sidebar-person-graziella
+          - <<: *sidebar-person-paolo      
+
+          - <<: *sidebar-weather
+          - <<: *sidebar-temperature
+          - <<: *sidebar-bg-overlay     
+              
+
+
+
+
+  #############################################################################################################################################
+  #                                                                                                                                           #
+  #                                                               Statistics View                                                             #
+  #                                                                                                                                           #
+  #############################################################################################################################################
+
+  - title: Statistiche     
+    path: stats   
+    icon: mdi:speedometer
+    panel: true
+    cards:
+      - <<: *main-bg
+        elements:
+          - type: 'custom:bar-card'
+            entity: sensor.processor_temperature
+            icon: mdi:lightbulb-group
+            height: 6px
+            min: 0
+            max: 80
+            decimal: 1
+            animation:
+              state: on
+              speed: 5
+            positions:
+              indicator: off
+              icon: inside
+            style: |
+              :host {
+                left: 40%;
+                top: 34%;
+                width: 30%;
+                height: 6%;
+                overflow: hidden;
+                background: none !important;
+                box-shadow: none !important;
+
+                --primary-text-color: rgba(255,255,255, 0.9);
+                --icon-color: rgba(255,255,255, 0.9);
+                --bar-card-border-radius: 4px;
+                --paper-font-body1_-_font-size: 1.3vw;
+                --mdc-icon-size: 16px;
+              }
+              ha-card{
+                    background: transparent;
+                    box-shadow: unset;
+                    padding: 0 !important;
+              }
+              bar-card-value{
+                margin: 4px 10px;
+              }
+              bar-card-backgroundbar, bar-card-currentbar {
+                margin-top: 20px;
+              }
+
+
+  #############################################################################################################################################
+  #                                                                                                                                           #
+  #                                                               Weather View                                                                #
+  #                                                                                                                                           #
+  #############################################################################################################################################
+
+  - title: Weather     
+    path: weather   
+    icon: mdi:white-balance-sunny
+    panel: true
+    cards:
+      - <<: *main-bg
+        elements:
+
+          - type: 'custom:weather-card'
+            entity: weather.casa
+            icons: '/local/images/weather/animated/'
+            name: Milano
+            current: true
+            details: true
+            forecast: true
+            number_of_forecasts: 5
+            style: |
+              :host {
+                left: 61.5%;
+                top:  38%;
+                width: 70%;
+                overflow: hidden;
+                height: 63%;
+                background: none !important;
+                box-shadow: none !important;
+
+                --primary-text-color: rgba(255,255,255,0.9);
+              }
+              
+              .current {
+                margin-bottom: 7vw;
+              }
+              .variations {
+                margin-bottom: 4vw;
+                margin-top: 8vw;
+              }
+              ha-card {
+                height: 100%;
+                background: none  !important;
+                box-shadow: none !important;
+                border-radius: 1vw;
+                font-size: 1.2vw !important;
+              }
+              .forecast{
+                padding: 0 2.5%;
+                width: 95%;
+              }
+              .forecast .day:first-child{
+                border-left: 0.1em solid #d9d9d9;
+              }
+              .forecast .day:last-child{
+                border-right: 0.1em solid #d9d9d9;
+              }
+
+            # https://github.com/lukevink/home-assistant-custom-iframe
+          - type: 'custom:custom-iframe'
+            url: 'https://embed.windy.com/embed2.html?lat=43.008&lon=13.946&detailLat=45.464&detailLon=9.189&width=720&height=260&zoom=5&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1'
+            style: |
+              :host {
+                left: 61.5%;
+                top:  75%;
+                width: 70%;
+                overflow: hidden;
+                height: 39%;
+                background: none !important;
+                box-shadow: none !important;
+                mix-blend-mode: hard-light;
+              }
+              .resp-iframe {
+                  position: absolute;
+                  top: -45px;
+                  left: 0;
+                  width: 850px;
+                  height: 420px;
+                  border: 0;
+              }
+
+        #################################################################
+        #                                                               #
+        #                             SIDEBAR                           #
+        #                                                               #
+        #################################################################  
+
+          - <<: *sidebar-bg
+
+          - <<: *sidebar-time
+          - <<: *sidebar-date
+
+          - <<: *sidebar-menu-1
+          - <<: *sidebar-menu-2
+          - <<: *sidebar-menu-3
+          - <<: *sidebar-menu-4
+          #- <<: *sidebar-menu-5
+
+          - <<: *sidebar-person-fabio
+          - <<: *sidebar-person-rosita
+          - <<: *sidebar-person-giovanna
+          - <<: *sidebar-person-graziella
+          - <<: *sidebar-person-paolo      
+
+          - <<: *sidebar-weather
+          - <<: *sidebar-temperature
+          - <<: *sidebar-bg-overlay      

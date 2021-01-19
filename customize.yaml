@@ -1,0 +1,9 @@
+####################################################
+#                                                  #
+#               CUSTOMIZE DEVICES                  #
+#                                                  #
+####################################################
+
+media_player.samsung_tv_ue46h6400:
+  device_class: tv
+  icon: mdi:television

@@ -1,0 +1,236 @@
+# https://www.home-assistant.io/docs/automation/trigger/
+# https://www.home-assistant.io/integrations/system_log/
+
+####################################################
+#                                                  #
+#                    DuckDns                       #
+#                                                  #
+####################################################
+- alias: "Duckdns Update Hourly"
+  trigger: 
+    - platform: time_pattern
+      hours: '/1'
+      minutes: '00'
+      seconds: '00'
+  action:
+    - service: shell_command.curl_duckdns
+      data:
+        domain: !secret duckdns_domain
+        token: !secret duckdns_token
+    - service: system_log.write
+      data:
+        message: "Automation: Duckdns updated"
+        level: info
+
+
+####################################################
+#                                                  #
+#                    iSmartAlarm                   #
+#                                                  #
+####################################################
+- alias: "iSmartAlarm Webhook - Get DISARM from IFTTT"
+  trigger:
+    - platform: event
+      event_type: ifttt_webhook_received
+      event_data:
+        action: call_service
+  condition: "{{ trigger.event.data.service == 'ismartalarm_mode' and trigger.event.data.mode == 'Disarm' and not is_state('input_text.ismartalarm_status', 'disarmed') }}"
+  action:
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.ismartalarm_status
+        value: disarmed
+    - service: alarm_control_panel.alarm_disarm
+      data: 
+        entity_id: alarm_control_panel.ismartalarm
+        code: !secret alarm_code
+    - service: system_log.write
+      data:
+        message: "IFTTT - iSmartAlarm Webhook - {{ trigger.event.data.mode }} "
+        level: warning
+
+- alias: "iSmartAlarm Webhook - Get ARMED AWAY from IFTTT"
+  trigger:
+    - platform: event
+      event_type: ifttt_webhook_received
+      event_data:
+        action: call_service
+  condition: "{{ trigger.event.data.service == 'ismartalarm_mode' and trigger.event.data.mode == 'Arm' and not is_state('input_text.ismartalarm_status', 'armed_away') }}"
+  action:
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.ismartalarm_status
+        value: armed_away
+    - service: alarm_control_panel.alarm_arm_away
+      data:
+        entity_id: alarm_control_panel.ismartalarm
+        code: !secret alarm_code
+    - service: system_log.write
+      data:
+        message: "IFTTT - iSmartAlarm Webhook - {{ trigger.event.data.mode }} "
+        level: warning
+
+- alias: "iSmartAlarm Webhook - Get ARMED HOME from IFTTT"
+  trigger:
+    - platform: event
+      event_type: ifttt_webhook_received
+      event_data:
+        action: call_service
+  condition: "{{ trigger.event.data.service == 'ismartalarm_mode' and trigger.event.data.mode == 'Home' and not is_state('input_text.ismartalarm_status', 'armed_home') }}"
+  action:
+    - service: input_text.set_value 
+      data:
+        entity_id: input_text.ismartalarm_status
+        value: armed_home
+    - service: alarm_control_panel.alarm_arm_home
+      data:
+        entity_id: alarm_control_panel.ismartalarm
+        code: !secret alarm_code
+    - service: system_log.write
+      data:
+        message: "IFTTT - iSmartAlarm Webhook - {{ trigger.event.data.mode }} "
+        level: warning
+
+- alias: "iSmartAlarm Webhook - Get ARMED NIGHT from IFTTT"
+  trigger:
+    - platform: event
+      event_type: ifttt_webhook_received
+      event_data:
+        action: call_service
+  condition: "{{ trigger.event.data.service == 'ismartalarm_mode' and trigger.event.data.mode == 'Notte' and not is_state('input_text.ismartalarm_status', 'armed_night') }}"
+  action:
+    - service: input_text.set_value 
+      data:
+        entity_id: input_text.ismartalarm_status
+        value: armed_night
+    - service: alarm_control_panel.alarm_arm_night
+      data:
+        entity_id: alarm_control_panel.ismartalarm
+        code: !secret alarm_code
+    - service: system_log.write
+      data:
+        message: "IFTTT - iSmartAlarm Webhook - {{ trigger.event.data.mode }} "
+        level: warning
+
+
+
+- alias: "iSmartAlarm Webhook - Get ALARM TRIGGERED from IFTTT"
+  trigger:
+    - platform: event
+      event_type: ifttt_webhook_received
+      event_data:
+        action: call_service
+  condition: "{{ trigger.event.data.service == 'ismartalarm_trigger' }}"
+  action:
+    - service: alarm_control_panel.alarm_trigger
+      data:
+        entity_id: alarm_control_panel.ismartalarm
+    - service: system_log.write
+      data:
+        message: "IFTTT - iSmartAlarm Webhook - {{ trigger.event.data.datetime }} - {{ trigger.event.data.device }} - {{ trigger.event.data.msg }}"
+        level: error
+    - service: notify.pbf
+      data:
+        message: "ALARM! The alarm has been triggered"
+
+
+
+- alias: "iSmartAlarm Webhook - Send DISARM to IFTTT"
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.ismartalarm
+      to: 'disarmed' 
+  condition: "{{ not is_state('input_text.ismartalarm_status', 'disarmed') }}"
+  action:
+    - service: shell_command.curl_ifttt_ismartalarm
+      data:
+        key: !secret ifttt_key_fp
+        applet: disarm_alarm
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.ismartalarm_status
+        value: disarmed
+    - service: system_log.write
+      data:
+        message: "iSmartAlarm: Disarmed"
+        level: warning
+
+- alias: "iSmartAlarm Webhook - Send ARMED AWAY to IFTTT"
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.ismartalarm
+      to: 'armed_away'
+  condition: "{{ not is_state('input_text.ismartalarm_status', 'armed_away') }}"
+  action:
+    - service: shell_command.curl_ifttt_ismartalarm
+      data:
+        key: !secret ifttt_key_fp
+        applet: arm_alarm
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.ismartalarm_status
+        value: armed_away
+    - service: system_log.write
+      data:
+        message: "iSmartAlarm: Armed Away"
+        level: warning
+
+
+- alias: "iSmartAlarm Webhook - Send ARMED HOME to IFTTT"
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.ismartalarm
+      to: 'armed_home'
+  condition: "{{ not is_state('input_text.ismartalarm_status', 'armed_home') }}"
+  action:
+    - service: shell_command.curl_ifttt_ismartalarm
+      data:
+        key: !secret ifttt_key_rp
+        applet: arm_home
+    - service: input_text.set_value 
+      data:
+        entity_id: input_text.ismartalarm_status
+        value: armed_home
+    - service: system_log.write
+      data:
+        message: "iSmartAlarm: Armed Home"
+        level: warning
+
+- alias: "iSmartAlarm Webhook - Send ARMED NIGHT to IFTTT"
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.ismartalarm
+      to: 'armed_night'
+  condition: "{{ not is_state('input_text.ismartalarm_status', 'armed_night') }}"
+  action:  
+    - service: shell_command.curl_ifttt_ismartalarm
+      data:
+        key: !secret ifttt_key_rp
+        applet: arm_night
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.ismartalarm_status
+        value: armed_night 
+    - service: system_log.write
+      data:
+        message: "iSmartAlarm: Armed Night"
+        level: warning
+
+
+####################################################
+#                                                  #
+#                    Lavatrice                     #
+#                                                  #
+####################################################
+# https://github.com/ollo69/ha-smartthinq-sensors
+- alias: "Lavatrice - Wash completed"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.lavatrice_wash_completed
+      from: "off"
+      to: "on"
+  action:
+    - service: notify.pbf
+      data:
+        title: "Lavatrice - Lavaggio completato"
+        message: "Vai a svuotare la lavatrice!"

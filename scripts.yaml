@@ -1,0 +1,33 @@
+turn_tv_on:
+  alias: "Turn on TV with rm"
+  description: 'Turns on tv using broadlink rm if not already on'
+  mode: restart
+  sequence:
+    - condition: state
+      entity_id: switch.tvpower
+      state: 'off'
+    - service: remote.send_command
+      data:
+        entity_id: remote.rm_mini_3_remote
+        command: !secret samsung_cmd_power
+    - service: notify.pbf
+      data:
+        title: "TV - ON"
+        message: "Samsung TV UE40H6400 - sent turn on"
+
+turn_tv_off:
+  alias: "Turn off TV with rm"
+  description: 'Turns off tv using broadlink rm if not already off'
+  mode: restart
+  sequence:
+    - condition: state
+      entity_id: switch.tvpower
+      state: 'on'
+    - service: remote.send_command
+      data:
+        entity_id: remote.rm_mini_3_remote
+        command: !secret samsung_cmd_power
+    - service: notify.pbf
+      data:
+        title: "TV - OFF"
+        message: "Samsung TV UE40H6400 - sent turn off"

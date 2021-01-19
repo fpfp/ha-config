@@ -1,0 +1,800 @@
+####################################################
+#                                                  #
+#                Default Config                    #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/default_config/
+# Configure a default setup of Home Assistant (frontend, api, etc)
+#default_config:
+person:
+updater:
+zone:
+zeroconf:
+system_health:
+sun:
+ssdp:
+map:
+logbook:
+config:
+wake_on_lan:
+logger:
+  default: info
+
+
+
+####################################################
+#                                                  #
+#                     TTS                          #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/tts/
+# Text to speech
+tts:
+  - platform: google_translate
+
+
+
+####################################################
+#                                                  #
+#                  Groups                          #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/group/
+group: !include groups.yaml
+
+
+
+####################################################
+#                                                  #
+#                  Automations                     #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/automation/
+automation: !include automations.yaml
+
+
+
+####################################################
+#                                                  #
+#                  Scripts                         #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/script/
+script: !include scripts.yaml
+
+
+
+####################################################
+#                                                  #
+#                   Scene                          #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/scene/
+scene: !include scenes.yaml
+
+
+
+####################################################
+#                                                  #
+#                   CUSTOMIZING                    #
+#                                                  #
+####################################################
+# https://home-assistant.io/docs/configuration/basic/
+homeassistant:
+  allowlist_external_dirs: 
+    - /config/
+  customize: !include customize.yaml
+
+
+
+####################################################
+#                                                  #
+#                  Recorder                        #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/recorder
+recorder:
+  purge_keep_days: 10
+  commit_interval: 30
+  exclude:
+    domains:
+      - updater
+      - zone
+      - sun
+      - frontend
+      - group
+    entity_globs:
+      - binary_sensor.*_overheating
+      - binary_sensor.*_overpowering
+      - sensor.*_device_temperature
+      - sensor.shellyswitch25_*_channel_*_power
+      - sensor.*_channel_*_energy
+      - sensor.shellyem_e45b64_channel_2_*
+      - sensor.epson_xp_*_ink
+    entities:
+      - sensor.last_boot # Comes from 'systemmonitor' sensor platform
+      - binary_sensor.tv_ping
+      - timer.tv_delay
+      - input_boolean.tv_power_status
+      - sensor.date
+      - sensor.time
+      - sensor.day
+      - sensor.month
+      - sensor.date_string
+      - switch.tvpower
+      - remote.rm_mini_3_remote
+      - switch.shellyem_e45b64
+      - sensor.shellyem_e45b64_channel_1_energy_returned
+      - binary_sensor.shellyem_e45b64_overpowering
+      - sensor.hass_version_installed
+      - sensor.hass_version_latest
+    event_types:
+      - call_service # Don't record service calls
+
+
+
+####################################################
+#                                                  #
+#                      History                     #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/history/
+history:
+  exclude:
+    domains:
+      - automation
+      - updater
+      - sun
+      - group
+    entities:
+      - persistent_notification.config_entry_discovery
+      - binary_sensor.tv_ping
+      - timer.tv_delay
+      - input_boolean.tv_power_status
+      - input_boolean.ismartalarm_status
+      - sensor.date
+      - sensor.time
+      - sensor.day
+      - sensor.month
+      - sensor.date_string
+      - switch.tvpower
+      - remote.rm_mini_3_remote
+      - binary_sensor.lavatrice_error_state
+      - switch.shellyem_e45b64
+      - sensor.shellyem_e45b64_channel_1_energy_returned
+      - binary_sensor.shellyem_e45b64_overpowering
+      - sensor.hass_version_installed
+      - sensor.hass_version_latest
+    entity_globs:
+      - binary_sensor.*_occupancy
+      - binary_sensor.*_overheating
+      - binary_sensor.*_overpowering
+      - sensor.*_device_temperature
+      - sensor.*_channel_*_energy
+      - sensor.shellyswitch25_*_channel_*_power
+      - sensor.shellyem_e45b64_channel_2_*
+      - sensor.epson_xp_*_ink
+
+
+####################################################
+#                                                  #
+#                    Switch                        #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/switch.template/
+switch:
+# https://community.home-assistant.io/t/smart-toggle-switch-for-device-using-a-delayed-network-ping-to-detect-power-on-off/52452
+  - platform: template
+    switches:
+      tvpower:
+        friendly_name: Samsung TV UE40H6400 Status
+        value_template: >-
+          {% if is_state('timer.tv_delay', 'idle') %}
+          {{ states("binary_sensor.tv_ping") }}
+          {% else %}
+          {{ states("input_boolean.tv_power_status") }}
+          {% endif %}
+        turn_on:
+          - service: script.turn_tv_on
+          - service: input_boolean.turn_on
+            data:
+              entity_id: input_boolean.tv_power_status
+          - service: timer.start
+            entity_id: timer.tv_delay
+        turn_off:
+          - service: script.turn_tv_off
+          - service: input_boolean.turn_off
+            data:
+              entity_id: input_boolean.tv_power_status
+          - service: timer.start
+            entity_id: timer.tv_delay
+        icon_template: mdi:television-classic
+
+# https://www.home-assistant.io/integrations/timer/
+timer: # It takes 10 seconds for my tv to connect / disconnect from the network
+  tv_delay:
+    duration: '00:00:10'
+
+
+
+####################################################
+#                                                  #
+#                        Input                     #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/input_boolean/
+input_boolean:
+  tv_power_status: #store temporary TV power state while we are waiting for the TV ping to update
+    name: TV Power Status
+
+#https://www.home-assistant.io/integrations/input_text/
+input_text:
+  ismartalarm_status: 
+    name: iSmartAlarm Status
+
+
+
+####################################################
+#                                                  #
+#                    Sensor                        #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/sensor/
+sensor:
+
+# https://www.home-assistant.io/integrations/mitemp_bt/
+# https://github.com/home-assistant/core/issues/19326#issuecomment-551103628
+  - platform: mitemp_bt
+    mac: '58:2D:34:31:3F:4A'
+    name: Xiaomi T&H Ble
+    monitored_conditions:
+      - temperature
+      - humidity
+
+# https://www.home-assistant.io/integrations/time_date/
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
+
+# https://www.home-assistant.io/integrations/systemmonitor/
+  - platform: systemmonitor
+    resources:
+      - type: processor_temperature
+      - type: memory_use_percent
+      - type: disk_use_percent
+      - type: processor_use
+
+# https://www.home-assistant.io/integrations/version/
+  - platform: version
+    name: hass_version_installed
+
+  - platform: version
+    name: hass_version_latest
+    source: docker
+
+# https://www.home-assistant.io/integrations/filesize/
+  - platform: filesize
+    file_paths:
+      - /config/home-assistant_v2.db
+
+# https://www.home-assistant.io/integrations/dnsip/
+  - platform: dnsip
+
+
+# https://www.home-assistant.io/integrations/fritzbox_netmonitor/
+  - platform: fritzbox_netmonitor
+    name: 'FritbozNetMonitor'
+    host: '192.168.100.1' #il vostro ip del router
+
+
+# https://www.home-assistant.io/integrations/dht/
+  - platform: dht
+    sensor: DHT22
+    pin: 4
+    monitored_conditions:
+      - temperature
+      - humidity
+
+
+  - platform: template
+    sensors:
+
+
+      # extract temperature from weather
+      weather_temperature:
+        friendly_name: "Temperatura Esterna"
+        unit_of_measurement: '°C'
+        value_template: "{{ state_attr('weather.casa', 'temperature') }}"
+
+
+
+
+      # Converts time and date into sentence for UI  
+      day:
+        value_template: >
+          {% set days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] %}
+          {{ days[now().weekday()] }}
+
+      month:
+        value_template: >
+          {% set months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] %}
+          {{ months[now().month-1] }}
+
+      date_string:
+        friendly_name: "Full Date"
+        value_template: "{{ states('sensor.day') }}, {{ strptime(states('sensor.date'), '%Y-%m-%d').day }} {{ states('sensor.month') }} {{ now().year }}"
+
+
+
+      # https://appuntinformatica.wordpress.com/2020/04/18/progetto-home-automation-home-assistant-monitoriamo-il-nostro-router-fritzbox-e-impariamo-i-sensor-template/
+      fritz_transmission_rate_up:
+          friendly_name: "FRITZ!Box Upload"
+          unit_of_measurement: 'Kb/s'
+          value_template: "{{ (state_attr('sensor.fritboznetmonitor', 'transmission_rate_up')| int / 1000 ) | round(1) }}"
+
+      fritz_transmission_rate_down:
+          friendly_name: "FRITZ!Box Download"
+          unit_of_measurement: 'Kb/s'
+          value_template: "{{ (state_attr('sensor.fritboznetmonitor', 'transmission_rate_down')| int / 1000 ) | round(1) }}"
+
+
+
+
+
+       # https://community.home-assistant.io/t/tuya-local-with-energy-monitoring-and-without-tuya-convert/173564
+
+
+#      plug_dryer_voltage:
+#        friendly_name: "Presa Asciugatrice - Voltaggio"
+#        unit_of_measurement: 'V'
+#        value_template: "{{ states.switch.presa_asciugatrice.attributes.voltage }}"
+      
+#      plug_dryer_current:
+#        friendly_name: "Presa Asciugatrice - Potenza"
+#        unit_of_measurement: 'mA'
+#        value_template: "{{ states.switch.presa_asciugatrice.attributes.current }}"
+      
+      plug_dryer_current_consumption:
+        friendly_name: "Presa Asciugatrice - Consumo"
+        unit_of_measurement: 'W'
+        value_template: "{{ states.switch.presa_asciugatrice.attributes.current_consumption }}"
+
+#      plug_dishwasher_voltage:
+#        friendly_name: "Presa Lavastoviglie - Voltaggio"
+#        unit_of_measurement: 'V'
+#        value_template: "{{ states.switch.presa_lavastoviglie.attributes.voltage }}"
+
+#      plug_dishwasher_current:
+#        friendly_name: "Presa Lavastoviglie - Potenza"
+#        unit_of_measurement: 'mA'
+#        value_template: "{{ states.switch.presa_lavastoviglie.attributes.current }}"
+
+      plug_dishwasher_consumption:
+        friendly_name: "Presa Lavastoviglie - Consumo"
+        unit_of_measurement: 'W'
+        value_template: "{{ states.switch.presa_lavastoviglie.attributes.current_consumption }}"
+
+
+
+
+      # https://community.home-assistant.io/t/manually-calculating-power-consumption-of-lights/80498/2
+      # bagno piccolo
+      shelly1_c42478:
+        unit_of_measurement: "W"
+        value_template: >-
+          {% if is_state('switch.shelly1_c42478', 'on') %}
+            25
+          {% else %}
+            0
+          {% endif %}
+
+      # bagno   
+      shelly1_c4263c:
+        unit_of_measurement: "W"
+        value_template: >-
+          {% if is_state('switch.shelly1_c4263c', 'on') %}
+            25
+          {% else %}
+            0
+          {% endif %}    
+
+      # cameretta
+      shelly1_c4eeb1:
+        unit_of_measurement: "W"
+        value_template: >-
+          {% if is_state('switch.shelly1_c4eeb1', 'on') %}
+            7
+          {% else %}
+            0
+          {% endif %}    
+
+      # camera
+      shelly1_f3a160:
+        unit_of_measurement: "W"
+        value_template: >-
+          {% if is_state('switch.shelly1_f3a160', 'on') %}
+            7
+          {% else %}
+            0
+          {% endif %}  
+
+
+      # consumo luci totale
+      lights_consumption:
+        friendly_name: "Consumo Luci"
+        unit_of_measurement: "W"
+        value_template: >-
+          {{ 
+            states('sensor.shelly1_c42478') | float 
+          + states('sensor.shelly1_c4263c') | float 
+          + states('sensor.shelly1_c4eeb1') | float
+          + states('sensor.shelly1_f3a160') | float
+          + states('sensor.shellyswitch25_c467b1_channel_1_power') | float
+          + states('sensor.shellyswitch25_c467b1_channel_2_power') | float
+          + states('sensor.shellyswitch25_c4e381_channel_1_power') | float
+          + states('sensor.shellyswitch25_c4e381_channel_2_power') | float
+          + states('sensor.shellyswitch25_e5a302_channel_1_power') | float
+          + states('sensor.shellyswitch25_e5a302_channel_2_power') | float          
+          }}
+
+
+
+
+
+# https://www.home-assistant.io/integrations/binary_sensor/
+# https://www.home-assistant.io/integrations/binary_sensor.template/
+binary_sensor:
+# https://www.home-assistant.io/integrations/ping/
+  - platform: ping
+    host: 192.168.100.110
+    name: TV Ping
+    scan_interval: 5
+    count: 2
+
+  - platform: ping
+    name: Internet Access
+    host: 8.8.8.8
+    scan_interval: 300
+    count: 4
+
+
+
+####################################################
+#                                                  #
+#                    Duck Dns                      #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/duckdns/
+duckdns:
+  domain: !secret duckdns_domain
+  access_token: !secret duckdns_token
+
+
+
+####################################################
+#                                                  #
+#                     HTTP                         #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/http/
+# https://github.com/linuxserver/docker-swag#migrating-from-the-old-linuxserverletsencrypt-image
+# https://community.home-assistant.io/t/nginx-reverse-proxy-set-up-guide-docker/54802
+http:
+  use_x_forwarded_for: true
+  trusted_proxies: 
+    - 172.22.0.2
+    - 172.20.0.2
+    - 127.0.0.1
+  ip_ban_enabled: true
+  login_attempts_threshold: 3
+
+
+####################################################
+#                                                  #
+#                    IFTTT                         #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/ifttt/
+ifttt:
+  key:
+    key_fp: !secret ifttt_key_fp
+    key_rp: !secret ifttt_key_rp
+
+
+####################################################
+#                                                  #
+#                 Shell Commands                   #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/shell_command/
+shell_command:
+  curl_duckdns: curl -X GET 'https://www.duckdns.org/update?domains={{ domain }}&token={{ token }}&ip='
+  curl_ifttt_ismartalarm: curl -X POST 'https://maker.ifttt.com/trigger/{{ applet }}/with/key/{{ key }}'
+
+
+
+####################################################
+#               Device Tracker                     #
+#                                                  #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/device_tracker/
+device_tracker:
+# https://www.home-assistant.io/integrations/nmap_tracker/
+
+# https://github.com/mudape/iphonedetect
+  - platform: iphonedetect
+    consider_home: 120
+    scan_interval: 12
+    new_device_defaults:
+      track_new_devices: true
+    hosts:
+      iphone_di_fabio: 192.168.100.140
+      iphone_di_rosita: 192.168.100.141
+      iphone_di_giovanna: 192.168.100.142
+      iphone_di_graziella: 192.168.100.143
+      iphone_di_paolo: 192.168.100.144 
+
+
+
+####################################################
+#                Media Player                      #
+#                                                  #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/media_player/
+media_player:
+# https://www.home-assistant.io/integrations/universal/
+  - platform: universal
+    name: Samsung TV UE40H6400
+    commands:
+      turn_on:
+        service: switch.turn_on
+        data:
+          entity_id: switch.tvpower
+      turn_off:
+        service: switch.turn_off
+        data:             
+          entity_id: switch.tvpower
+      volume_up:
+        service: remote.send_command
+        data:
+          entity_id: remote.rm_mini_3_remote
+          command: !secret samsung_cmd_volume_up
+      volume_down:
+        service: remote.send_command
+        data:
+          entity_id: remote.rm_mini_3_remote
+          command: !secret samsung_cmd_volume_down
+    attributes:
+      state: switch.tvpower
+
+
+
+
+####################################################
+#                   Alarm                          #
+#                                                  #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/alarm_control_panel/
+# https://www.home-assistant.io/integrations/manual/
+# https://community.home-assistant.io/t/example-of-the-manual-alarm/14658/21
+alarm_control_panel:
+  - platform: manual
+    name: iSmartAlarm
+    code: !secret alarm_code
+    code_arm_required: true
+    arming_time: 5
+    delay_time: 0
+    trigger_time: 0
+
+
+####################################################
+#                   Notify                         #
+#                                                  #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/notify/
+# https://www.home-assistant.io/integrations/pushbullet/#notifications
+notify:
+  - name: pbf
+    platform: pushbullet
+    api_key: !secret pushbullet_key
+
+
+
+####################################################
+#                   Local Tuya                     #
+#                                                  #
+#                                                  #
+####################################################
+# https://github.com/rospogrigio/localtuya
+localtuya:
+  - host: 192.168.100.170
+    device_id: !secret tuya_plug_01_id
+    local_key: !secret tuya_plug_01_key
+    friendly_name: Presa Asciugatrice
+    protocol_version: "3.3"
+    entities:
+      - platform: switch
+        friendly_name: Presa Asciugatrice
+        id: 1
+        current: 18
+        current_consumption: 19
+        voltage: 20
+  - host: 192.168.100.171
+    device_id: !secret tuya_plug_02_id
+    local_key: !secret tuya_plug_02_key
+    friendly_name: Presa Lavastoviglie
+    protocol_version: "3.3"
+    entities:
+      - platform: switch
+        friendly_name: Presa Lavastoviglie
+        id: 1
+        current: 18
+        current_consumption: 19
+        voltage: 20
+
+
+
+####################################################
+#                       API                        #
+#                                                  #
+#                                                  #
+####################################################
+# https://developers.home-assistant.io/docs/en/external_api_rest.html
+api:
+
+
+####################################################
+#                   Alexa Skill                    #
+#                                                  #
+#                                                  #
+####################################################
+# https://www.saggiamente.com/2020/01/come-usare-home-assistant-con-alexa-gratuitamente-metodo-aggiornato-senza-nabucasa-e-token/
+# https://www.home-assistant.io/integrations/alexa.smart_home/
+alexa:
+  # Skill Scope
+  smart_home:
+    filter: 
+      include_entities:
+        - switch.tvpower
+    entity_config:
+      switch.tvpower:
+        name: SAMSUNG TV UE40H6400
+        display_categories: TV
+
+
+
+####################################################
+#                   Spotify                        #
+#                                                  #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/spotify/
+spotify:
+  client_id: !secret spotify_client_id
+  client_secret: !secret spotify_client_secret
+
+
+spotcast:
+  sp_dc: !secret spotify_spotcast_dc
+  sp_key: !secret spotify_spotcast_key
+
+#homekit:
+
+#- port: 51827
+#  name: HASS Bridge ALCS
+#  auto_start: true
+#  mode: bridge
+#  filter:
+#    include_domains:
+#      - alarm_control_panel
+#      - light
+#      - cover
+#    include_entity_globs:
+#      - binary_sensor.*_occupancy
+#    include_entities:
+#      - sensor.xiaomi_t_h_ble_humidity
+#      - sensor.xiaomi_t_h_ble_temperature
+#    exclude_entities:
+#      - switch.tvpower
+#  entity_config:
+#    alarm_control_panel.ismartalarm:
+#      code: !secret alarm_code
+#    switch.02283024dc4f225abec8:
+#      type: outlet
+#    switch.bf6851b011ec5a759drz6s:
+#      type: outlet
+#    switch.bf99cef22ec6683bbbnhjv
+#      type: outlet
+#    switch.presa_asciugatrice
+#      type: outlet
+#    switch.presa_lavastoviglie
+#      type: outlet
+#- port: 52827
+#  name: HASS Bridge MP 
+#  auto_start: true
+#  mode: accessory
+#  filter:
+#    include_entities:
+#      - media_player.samsung_tv_ue40h6400
+#  entity_config:
+#      media_player.samsung_tv_ue40h6400:
+#      name: Samsung TV UE40H6400
+#      feature_list:
+#        - feature: on_off
+
+
+
+####################################################
+#                   browser_mod                    #
+#                                                  #
+#                                                  #
+####################################################
+# https://github.com/thomasloven/hass-browser_mod
+browser_mod:
+  devices:
+    d2fc860c-16379d34:
+      name: "kiosk"
+  disable:
+    - all
+
+
+####################################################
+#                   Lovelace                       #
+#                                                  #
+#                                                  #
+####################################################
+lovelace:
+  mode: yaml
+  resources:
+    - url: /local/js/button-card.js?v=3.4.0
+      type: module
+    - url: /local/js/bar-card.js?v=3.2.0
+      type: module
+    - url: /local/js/card-mod.js?v=2.0.3
+      type: module
+    - url: /local/js/custom-header.js?v=1.8.3
+      type: module
+    - url: /local/js/mini-graph-card-bundle.js?v=0.9.4
+      type: module
+    - url: /local/js/simple-weather-card-bundle.js?v=0.8.1
+      type: module
+    - url: /local/js/mini-media-player-bundle.js?v=1.11.0
+      type: module
+    - url: /local/js/homekit-panel-card.js?v=0.5.9
+      type: module      
+    - url: /local/js/light-entity-card.js?v=4.3.0
+      type: js
+    - url: /local/js/light-popup-card.js?v=0.4.8.4
+      type: module
+    - url: /local/js/spotify-card.js?v=2.3.5
+      type: module
+    - url: /local/js/weather-card.js?v=1.5.0
+      type: module
+    - url: /local/js/alarm-control-panel-card.js?v=1.0
+      type: module
+    - url: /local/js/custom-iframe-card.js?v=1.0
+      type: module
+#    - url: /local/js/layout-card.js?v=16
+#      type: module      
+#    - url: /local/js/stack-in-card.js?v=0.2.0
+#      type: module      
+#    - url: /local/js/swipe-card.js?v=20201119
+#      type: module
+#    - url: /local/font.css?v=0.1.0
+#      type: css
+
+  dashboards:
+    dashboard-kiosk: # Needs to contain a hyphen (-)
+      mode: yaml
+      filename: dashboard-kiosk.yaml
+      title: Kiosk Dashboard
+      icon: mdi:image-filter-center-focus
+      show_in_sidebar: true
+      require_admin: true
+
+
