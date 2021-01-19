@@ -544,7 +544,7 @@ views:
         state_image:
           "off": /local/images/floorplan/transparent_square.png
           "on": /local/images/floorplan/floor_lights_boxroom_on.png?v=0.3
-          "unavailable": /local/images/floorplan/transparent_square.png
+          "unavailable": /local/images/floorplan/unavailable_square.png?v=0.3
         style:
           <<: *image-style
 
@@ -556,7 +556,7 @@ views:
         state_image:
           "off": /local/images/floorplan/transparent_square.png
           "on": /local/images/floorplan/floor_lights_entrance_on.png?v=0.3
-          "unavailable": /local/images/floorplan/transparent_square.png
+          "unavailable": /local/images/floorplan/unavailable_square.png?v=0.3
         style:
           <<: *image-style
 
@@ -568,7 +568,7 @@ views:
         state_image:
           "off": /local/images/floorplan/transparent_square.png
           "on": /local/images/floorplan/floor_lights_kitchen_on.png?v=0.3
-          "unavailable": /local/images/floorplan/transparent_square.png
+          "unavailable": /local/images/floorplan/unavailable_square.png?v=0.3
         style:
           <<: *image-style
 
@@ -580,7 +580,7 @@ views:
         state_image:
           "off": /local/images/floorplan/transparent_square.png
           "on": /local/images/floorplan/floor_lights_living_int_on.png?v=0.3
-          "unavailable": /local/images/floorplan/transparent_square.png
+          "unavailable": /local/images/floorplan/unavailable_square.png?v=0.3
         style:
           <<: *image-style
       
@@ -591,7 +591,7 @@ views:
         state_image:
           "off": /local/images/floorplan/transparent_square.png
           "on": /local/images/floorplan/floor_lights_living_ext_on.png?v=0.3
-          "unavailable": /local/images/floorplan/transparent_square.png
+          "unavailable": /local/images/floorplan/unavailable_square.png?v=0.3
         style:
           <<: *image-style
 
@@ -602,7 +602,7 @@ views:
         state_image:
           "off": /local/images/floorplan/transparent_square.png
           "on": /local/images/floorplan/floor_lights_living_lamp_on.png?v=0.3
-          "unavailable": /local/images/floorplan/transparent_square.png
+          "unavailable": /local/images/floorplan/unavailable_square.png?v=0.3
         style:
           <<: *image-style
 
@@ -614,7 +614,7 @@ views:
         state_image:
           "off": /local/images/floorplan/transparent_square.png
           "on": /local/images/floorplan/floor_lights_hallway_on.png?v=0.3
-          "unavailable": /local/images/floorplan/transparent_square.png
+          "unavailable": /local/images/floorplan/unavailable_square.png?v=0.3
         style:
           <<: *image-style       
 
@@ -626,7 +626,7 @@ views:
         state_image:
           "off": /local/images/floorplan/transparent_square.png
           "on": /local/images/floorplan/floor_lights_bedroom_on.png?v=0.3
-          "unavailable": /local/images/floorplan/transparent_square.png
+          "unavailable": /local/images/floorplan/unavailable_square.png?v=0.3
         style:
           <<: *image-style
 
@@ -638,7 +638,7 @@ views:
         state_image:
           "off": /local/images/floorplan/transparent_square.png
           "on": /local/images/floorplan/floor_lights_bedroom_child_on.png?v=0.3
-          "unavailable": /local/images/floorplan/transparent_square.png
+          "unavailable": /local/images/floorplan/unavailable_square.png?v=0.3
         style:
           <<: *image-style
 
@@ -650,7 +650,7 @@ views:
         state_image:
           "off": /local/images/floorplan/transparent_square.png
           "on": /local/images/floorplan/floor_lights_bathroom_on.png?v=0.3
-          "unavailable": /local/images/floorplan/transparent_square.png
+          "unavailable": /local/images/floorplan/unavailable_square.png?v=0.3
         style:
           <<: *image-style
 
@@ -662,7 +662,7 @@ views:
         state_image:
           "off": /local/images/floorplan/transparent_square.png
           "on": /local/images/floorplan/floor_lights_bathroom_child_on.png?v=0.3
-          "unavailable": /local/images/floorplan/transparent_square.png
+          "unavailable": /local/images/floorplan/unavailable_square.png?v=0.3
         style:
           <<: *image-style
 
@@ -1165,6 +1165,8 @@ views:
 
                           - entity: sensor.lavatrice
                             hideState: true
+                            image: /local/images/icons/washer__on.svg?v=0.3
+                            offImage: /local/images/icons/washer__off.svg?v=0.3 
                             
                                         
                         title: Bagni
@@ -1267,7 +1269,7 @@ views:
           - type: 'custom:mini-media-player'
             entity: media_player.spotify_fabio
             artwork: full-cover
-            background: /local/images/spotify_background.png?v=0.3
+            background: /local/images/spotify_bg.png?v=0.3
             volume_stateless: true
             hide:
               power: true

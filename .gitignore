@@ -5,6 +5,7 @@
 !*.yaml
 !.gitignore
 !*.md
+!www
 
 # Ignore folders.
 .storage
@@ -15,3 +16,4 @@
 ip_bans.yaml
 secrets.yaml
 known_devices.yaml
+www/images/people/*
