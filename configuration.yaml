@@ -624,14 +624,14 @@ localtuya:
         current: 18
         current_consumption: 19
         voltage: 20
-  - host: !secret ip_sp_dishwasher
+  - host: !secret ip_sp_kiosk
     device_id: !secret tuya_plug_02_id
     local_key: !secret tuya_plug_02_key
-    friendly_name: Presa Lavastoviglie
+    friendly_name: Presa Kiosk
     protocol_version: "3.3"
     entities:
       - platform: switch
-        friendly_name: Presa Lavastoviglie
+        friendly_name: Presa Kiosk
         id: 1
         current: 18
         current_consumption: 19
@@ -751,43 +751,48 @@ browser_mod:
 lovelace:
   mode: yaml
   resources:
+      # https://github.com/custom-cards/button-card
     - url: /local/js/button-card.js?v=3.4.0
       type: module
+      # https://github.com/custom-cards/bar-card
     - url: /local/js/bar-card.js?v=3.2.0
       type: module
+      # https://github.com/thomasloven/lovelace-card-mod
     - url: /local/js/card-mod.js?v=2.0.3
       type: module
+      # https://github.com/maykar/custom-header
     - url: /local/js/custom-header.js?v=1.8.3
       type: module
+      # https://github.com/kalkih/mini-graph-card
     - url: /local/js/mini-graph-card-bundle.js?v=0.9.4
       type: module
+      # https://github.com/kalkih/simple-weather-card
     - url: /local/js/simple-weather-card-bundle.js?v=0.8.1
       type: module
+      # https://github.com/kalkih/mini-media-player
     - url: /local/js/mini-media-player-bundle.js?v=1.11.0
       type: module
+      # https://github.com/DBuit/Homekit-panel-card
     - url: /local/js/homekit-panel-card.js?v=0.5.9
-      type: module      
-    - url: /local/js/light-entity-card.js?v=4.3.0
-      type: js
+      type: module    
+      # https://github.com/DBuit/light-popup-card
     - url: /local/js/light-popup-card.js?v=0.4.8.4
       type: module
+      # https://github.com/custom-cards/spotify-card
     - url: /local/js/spotify-card.js?v=2.3.5
       type: module
+      # https://github.com/bramkragten/weather-card
     - url: /local/js/weather-card.js?v=1.5.0
       type: module
+      # https://github.com/JumpMaster/custom-lovelace/tree/master/alarm_control_panel-card
     - url: /local/js/alarm-control-panel-card.js?v=1.0
       type: module
+      # https://github.com/lukevink/home-assistant-custom-iframe
     - url: /local/js/custom-iframe-card.js?v=1.0
       type: module
-#    - url: /local/js/layout-card.js?v=16
-#      type: module      
-#    - url: /local/js/stack-in-card.js?v=0.2.0
-#      type: module      
-#    - url: /local/js/swipe-card.js?v=20201119
-#      type: module
 #    - url: /local/font.css?v=0.1.0
 #      type: css
-
+    
   dashboards:
     dashboard-kiosk: # Needs to contain a hyphen (-)
       mode: yaml

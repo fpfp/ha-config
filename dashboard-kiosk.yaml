@@ -151,9 +151,9 @@ anchors:
       color: *secondary-color
       font-size: 5.41vw
       font-weight: 200
-      left: 2.7%
+      left: 12.7%
       letter-spacing: '-0.05vw'
-      max-width: 1px
+      width: 20%
       top: 10%
     tap_action:
       action: none
@@ -167,11 +167,11 @@ anchors:
       color: *third-color
       font-size: 1.5vw
       font-weight: 300
-      left: 18.1%
+      left: 13.1%
       letter-spacing: '-0.05vw'
       text-align: left
       top: 16%
-      width: 30%
+      width: 20%
     tap_action:
       action: none
       
@@ -722,35 +722,33 @@ views:
           service: browser_mod.popup
           service_data:
             card:
-              type: 'custom:light-entity-card'
-              color_temp: true
+              type: custom:light-popup-card
               entity: light.33882720600194e74bc3
-              hide_header: true
-              persist_features: true
-              smooth_color_wheel: true
-              style: |
-                :host{
-                  height: 100%;
-                  z-index: 0;  
-
-                  --primary-text-color: rgba(255, 255, 255, 0.9);
-                  --ha-card-background: rgba(0, 0, 0, 0.9);
-                }
-                ha-card {
-                  background: transparent !important;
-                  box-shadow: none !important;
-                }
             deviceID:
               - this
             title: Lampada
-            style: |
-              :host{
-                --primary-text-color: rgba(255, 255, 255, 0.9);
-                --secondary-background-color: rgba(0, 0, 0, 0.9);
-              }
-              .content{
-                background: rgba(0, 0, 0, 0.9) !important;
-              }
+            style:
+              $: |
+                .mdc-dialog .mdc-dialog__container {
+                  width: 100%;
+                }
+                .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+                  width:100%;
+                  box-shadow:none;
+                }
+              .: |
+                :host {
+                  --mdc-theme-surface: rgba(0,0,0,0);
+                  --secondary-background-color: rgba(0,0,0,0);
+                  --ha-card-background: rgba(0,0,0,0);
+                  --mdc-dialog-scrim-color: rgba(0,0,0,0.8);
+                  --mdc-dialog-min-height: 100%;
+                  --mdc-dialog-min-width: 100%;
+                  --mdc-dialog-max-width: 100%;
+                }
+                mwc-icon-button {
+                  color: #FFF;
+                }
         style:
           top: 40%
           left: 48%
@@ -1090,6 +1088,8 @@ views:
 
                           - entity: light.33882720600194e74bc3
                             slider: true
+                            popup:
+                              type: custom:light-popup-card
                             icon: 'mdi:floor-lamp'
                             image: /local/images/icons/floor_lamp__on.svg?v=0.3
                             offImage: /local/images/icons/floor_lamp__off.svg?v=0.3
@@ -1525,7 +1525,6 @@ views:
         elements:
           - type: 'custom:bar-card'
             entity: sensor.processor_temperature
-            icon: mdi:lightbulb-group
             height: 6px
             min: 0
             max: 80
@@ -1563,6 +1562,10 @@ views:
               bar-card-backgroundbar, bar-card-currentbar {
                 margin-top: 20px;
               }
+
+        #view to complete
+
+
 
 
   #############################################################################################################################################
