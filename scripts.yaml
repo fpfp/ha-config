@@ -31,3 +31,23 @@ turn_tv_off:
       data:
         title: "TV - OFF"
         message: "Samsung TV UE40H6400 - sent turn off"
+
+
+
+kiosk_toggle:
+  alias: "Toggle state of Entity and play sound"
+  mode: parallel
+  sequence:
+    - service: switch.toggle
+      data_template:
+        entity_id: "{{ entity_id }}"        
+    - service: media_player.play_media
+      data_template:
+        entity_id: media_player.kiosk
+        media_content_id: >-
+          {% if is_state(entity_id, 'off') %}
+            /local/sound/on.m4a
+          {% else %}
+            /local/sound/off.m4a
+          {% endif %}
+        media_content_type: music    

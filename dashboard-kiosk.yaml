@@ -1114,17 +1114,27 @@ views:
 
                           - entity: cover.shellyswitch25_e59f68
                             image: /local/images/icons/roller_shutter__open.svg?v=0.3
-                            offImage: /local/images/icons/roller_shutter__off.svg?v=0.3
+                            offImage: /local/images/icons/roller_shutter__closed.svg?v=0.3
+                            offStates:
+                              - unavailable 
+                              - closed
+                            state: cover.shellyswitch25_e59f68
+                            statePath: attributes.current_position
                             tap_action: 
                               action: call-service
                               service: cover.toggle
                               service_data:
                                 entity_id: cover.shellyswitch25_e59f68
-                            
-                          - entity: sensor.shellygas_50029178b441_gas_concentration
-                            hideState: true;
+                            double_tap_action:
+                              action: call-service
+                              service: cover.stop_cover
+                              service_data:
+                                entity_id: cover.shellyswitch25_e59f68
+
+                          - entity: binary_sensor.shellygas_50029178b441_gas
                             image: /local/images/icons/sensor_gas__on.svg?v=0.3
                             offImage: /local/images/icons/sensor_gas__off.svg?v=0.3
+                            state: sensor.shellygas_50029178b441_gas_concentration
 
                         title: Cucina
                     tileOnRow: 2
@@ -1168,7 +1178,7 @@ views:
                           - entity: binary_sensor.shellyflood_c8b7b7_flood
                             hideState: true
                             image: /local/images/icons/sensor_water__on.svg?v=0.3
-                            offImage: /local/images/icons/sensor_water__on.svg?v=0.3  
+                            offImage: /local/images/icons/sensor_water__off.svg?v=0.3  
 
                           - entity: sensor.lavatrice
                             hideState: true
@@ -1186,11 +1196,13 @@ views:
                             icon: 'mdi:power-socket-eu'
                             image: /local/images/icons/plug__on.svg?v=0.3
                             offImage: /local/images/icons/plug__off.svg?v=0.3
+                            state: sensor.plug_dryer_current_consumption
 
                           - entity: switch.presa_lavastoviglie
                             icon: 'mdi:power-socket-eu'
                             image: /local/images/icons/plug__on.svg?v=0.3
                             offImage: /local/images/icons/plug__off.svg?v=0.3
+                            state: sensor.plug_dishwasher_consumption
 
                           - entity: switch.bf99cef22ec6683bbbnhjv
                             image: /local/images/icons/plug__on.svg?v=0.3

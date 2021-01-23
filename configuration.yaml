@@ -296,6 +296,9 @@ sensor:
       - temperature
       - humidity
 
+# https://www.home-assistant.io/integrations/uptime/
+  - platform: uptime
+
 
   - platform: template
     sensors:
@@ -313,12 +316,12 @@ sensor:
       # Converts time and date into sentence for UI  
       day:
         value_template: >
-          {% set days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] %}
+          {% set days = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"] %}
           {{ days[now().weekday()] }}
 
       month:
         value_template: >
-          {% set months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] %}
+          {% set months = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"] %}
           {{ months[now().month-1] }}
 
       date_string:
@@ -798,7 +801,7 @@ lovelace:
       mode: yaml
       filename: dashboard-kiosk.yaml
       title: Kiosk Dashboard
-      icon: mdi:image-filter-center-focus
+      icon: mdi:tablet-dashboard
       show_in_sidebar: true
       require_admin: true
 
