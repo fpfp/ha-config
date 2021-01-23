@@ -1113,7 +1113,12 @@ views:
                           - entity: cover.shellyswitch25_e59f68
                             image: /local/images/icons/roller_shutter__open.svg?v=0.3
                             offImage: /local/images/icons/roller_shutter__off.svg?v=0.3
-
+                            tap_action: 
+                              action: call-service
+                              service: cover.toggle
+                              service_data:
+                                entity_id: cover.shellyswitch25_e59f68
+                            
                           - entity: sensor.shellygas_50029178b441_gas_concentration
                             hideState: true;
                             image: /local/images/icons/sensor_gas__on.svg?v=0.3
