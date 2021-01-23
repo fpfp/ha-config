@@ -78,7 +78,7 @@ anchors:
       - margin: 0
 
 
-  menu-styles: &menu-active-styles
+  menu-active-styles: &menu-active-styles
     card:
       - background-color: *bg-highlight-color
       - border-radius: 50px
@@ -96,6 +96,8 @@ anchors:
     icon:
       - color: *primary-color
       - margin: 0
+
+
 
   #########################    BG IMAGE    #########################
 
