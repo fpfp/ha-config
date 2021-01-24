@@ -1,0 +1,25 @@
+- name: Night - Lights Off
+  icon: "mdi:power-sleep"
+  entities: 
+    switch.shelly1_c42478:
+      state: "off"
+    switch.shelly1_c4263c:
+      state: "off"
+    switch.shelly1_c4eeb1:
+      state: "off"
+    switch.shelly1_f3a160:
+      state: "off"
+    switch.shellyswitch25_c469f5_channel_1:
+      state: "off"
+    switch.shellyswitch25_e5a302_channel_1:
+      state: "off"
+    switch.shellyswitch25_e5a302_channel_2:
+      state: "off"
+    switch.shellyswitch25_c4e381_channel_1:
+      state: "off"
+    switch.shellyswitch25_c4e381_channel_2:
+      state: "off"
+    switch.shellyswitch25_c467b1_channel_1:
+      state: "off"
+    switch.shellyswitch25_c467b1_channel_2:
+      state: "off"

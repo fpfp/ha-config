@@ -297,6 +297,7 @@ sensor:
       - humidity
 
 # https://www.home-assistant.io/integrations/uptime/
+# https://community.home-assistant.io/t/uptime-in-days-hours-and-minutes/180916/21
   - platform: uptime
 
 

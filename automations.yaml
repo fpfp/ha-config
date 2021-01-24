@@ -223,12 +223,200 @@
 #                                                  #
 ####################################################
 # https://github.com/ollo69/ha-smartthinq-sensors
+#- alias: "Lavatrice - Wash completed"
+#  trigger:
+#    - platform: state
+#      entity_id: binary_sensor.lavatrice_wash_completed
+#      from: "off"
+#      to: "on"
+#  action:
+#    - service: notify.pbf
+#      data:
+#        title: "Lavatrice - Lavaggio completato"
+#        message: "Vai a svuotare la lavatrice!"
+
+
+
+####################################################
+#                                                  #
+#                    Kiosk                         #
+#                                                  #
+####################################################
+- alias: "Tablet - Start charging"
+  trigger:
+    - platform: time
+      at: "10:30:00"
+  action:
+    - service: switch.turn_on
+      data:
+        entity_id: switch.presa_lavastoviglie
+
+- alias: "Tablet - Stop charging"
+  trigger:
+    - platform: time
+      at: "18:00:00"
+  action:
+    - service: switch.turn_off
+      data:
+        entity_id: switch.presa_lavastoviglie
+
+
+- alias: "Kiosk - Turn on screen"
+  trigger:
+    - platform: time
+      at: "06:30:00"
+  action:
+    service: light.turn_on
+    entity_id: light.kiosk
+
+- alias: "Kiosk - Turn off screen"
+  trigger:
+    - platform: time
+      at: "00:30:00"
+  action:
+    service: light.turn_off
+    entity_id: light.kiosk
+
+
+
+
+
+####################################################
+#                                                  #
+#                    Lights                        #
+#                                                  #
+####################################################
+
+
+- alias: "Night - Turn off lights"
+  trigger:
+    - platform: time
+      at: "01:00:00"
+  action:
+    service: scene.turn_on
+    entity_id: scene.night_lights_off
+
+
+
+
+####################################################
+#                                                  #
+#                    Alerts                        #
+#                                                  #
+####################################################
+
+- alias: "Power consumption - Send alert > 3kw"
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.shellyem_e45b64_channel_1_power
+    above: 3100
+    below: 4000
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  action:
+    - service: notify.pbf
+      data:
+        title: "Consumo elettrico > 3kw"
+        message: "{{ sensor.shellyem_e45b64_channel_1_power }} kw - Controlla gli elettrodomestici accesi"
+
+
+
+- alias: "Power consumption - Send alert > 4kw"
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.shellyem_e45b64_channel_1_power
+    above: 4000
+    below: 5000
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  action:
+    - service: notify.pbf
+      data:
+        title: "Consumo elettrico > 4kw"
+        message: "{{ sensor.shellyem_e45b64_channel_1_power }} kw - Spegni qualche elettrodomestico acceso"
+
+
+
+- alias: "RPI - CPU High temperature"
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.processor_temperature
+    above: 65
+    below: 80
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  action:
+    - service: notify.pbf
+      data:
+        title: "Raspberry - Temperatura CPU elevata"
+        message: "{{ sensor.processor_temperature }}° - Controlla i processi in esecuzione"
+
+
+
+- alias: "Kiosk Offline"
+  trigger:
+      platform: state
+      entity_id: sensor.kiosk
+      to: '0'
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
+  action:
+    - service: notify.pbf
+      data:
+        title: "M34 - Kiosk offline"
+        message: "Controlla lo stato del tablet"
+
+
+
+- alias: "Internet Offline"
+  trigger:
+      platform: state
+      entity_id: binary_sensor.internet_access
+      to: 'off'
+      for:
+        hours: 0
+        minutes: 1
+        seconds: 0
+  action:
+    - service: notify.pbf
+      data:
+        title: "M34 - Internet offline"
+        message: "Controlla la connessione internet"
+
+
+
+- alias: "Power down"
+  trigger:
+      platform: state
+      entity_id: sensor.shellyem_e45b64_channel_1_power
+      to: 'unavailable'
+      for:
+        hours: 0
+        minutes: 1
+        seconds: 0
+  action:
+    - service: notify.pbf
+      data:
+        title: "M34 - é saltata la corrente"
+        message: "Controlla il quadro elettrico e il contatore"
+
+
+
 - alias: "Lavatrice - Wash completed"
   trigger:
     - platform: state
-      entity_id: binary_sensor.lavatrice_wash_completed
+      entity_id: sensor.lavatrice
       from: "off"
       to: "on"
+  condition: "{{ state_attr('sensor.lavatrice', 'pre_state') == 'Centrifuga' or state_attr('sensor.lavatrice', 'pre_state') == 'Completato' }}"
   action:
     - service: notify.pbf
       data:
