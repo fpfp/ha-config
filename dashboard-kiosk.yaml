@@ -44,7 +44,15 @@ anchors:
     tap_action:
       action: toggle
 
-
+  sensor-style: &sensor-style
+    color: 'rgba(255, 255, 255, 0.3)'
+    height: 30px
+    width: 50px
+    text-align: center
+    background-color: transparent
+    font-size: 10px
+    font-weight: bold
+    line-height: 15px
 
   image-style: &image-style
     mix-blend-mode: lighten
@@ -114,7 +122,7 @@ anchors:
 
   #########################    SIDEBAR Background    #########################
 
-  sidebar: &sidebar-bg
+  sidebar-bg: &sidebar-bg
     type: image
     action: none
     hold_action:
@@ -129,7 +137,7 @@ anchors:
     tap_action:
       action: none
 
-  sidebar: &sidebar-bg-overlay
+  sidebar-bg-overlay: &sidebar-bg-overlay
     type: image
     image: /local/images/transparent.png
     style:
@@ -456,6 +464,7 @@ anchors:
 
         --paper-item-icon-color: rgba(255,255,255,0.7);
         --primary-text-color: rgba(255,255,255,0.7);
+        --primary-background-color: rgba(255,255,255, 0.3);
       }
       .header {
         font-size: 1vw;
@@ -491,7 +500,7 @@ anchors:
       }
     tap_action:
       action: navigate
-      navigation_path: /dashboard-floorplan/4
+      navigation_path: /dashboard-kiosk/temperature
 
       
   
@@ -677,7 +686,7 @@ views:
         entity: group.boxroom_lights
         icon: 'mdi:ceiling-light'
         style:
-          top: 89%
+          top: 90%
           left: 66%
         <<: *icon-style
 
@@ -804,18 +813,68 @@ views:
       #########################    INDIVIDUAL SENSORS    #########################
 
       - type: state-label
-        entity: sensor.xiaomi_t_h_ble_temperature
+        entity: sensor.lumi_lumi_weather_cee68205_temperature
         style:
           top: 37%
           left: 31.5%
-          color: *secondary-color
-          height: 50px
-          width: 50px
-          text-align: center
-          background-color: transparent
-          font-size: 11px
-          font-weight: bold
-          line-height: 36px
+          <<: *sensor-style  
+
+      # Camera
+      - type: state-label
+        entity: sensor.lumi_lumi_weather_38128005_temperature
+        style:
+          top: 11.5%
+          left: 31.5%
+          <<: *sensor-style 
+
+      # Bagnetto
+      - type: state-label
+        entity: sensor.lumi_lumi_weather_468d8205_temperature
+        style:
+          top: 11.5%
+          left: 51%
+          <<: *sensor-style 
+
+      # Bagno
+      - type: state-label
+        entity: sensor.lumi_lumi_weather_978c8205_temperature
+        style:
+          top: 23.5%
+          left: 66.5%
+          <<: *sensor-style 
+
+      # Camera    
+      - type: state-label
+        entity: sensor.lumi_lumi_weather_4b8a8205_temperature
+        style:
+          top: 10%
+          left: 72.5%
+          <<: *sensor-style 
+
+      # Cucina
+      - type: state-label
+        entity: sensor.lumi_lumi_weather_89069d01_temperature
+        style:
+          top: 60%
+          left: 87%
+          <<: *sensor-style 
+
+      # Corridoio
+      - type: state-label
+        entity: sensor.lumi_lumi_weather_7f8d8205_temperature
+        style:
+          top: 39.5%
+          left: 67%
+          <<: *sensor-style 
+
+
+      # Ripostiglio
+      - type: state-label
+        entity: sensor.lumi_lumi_weather_80069d01_temperature
+        style:
+          top: 85%
+          left: 68%
+          <<: *sensor-style 
 
 
       - type: 'custom:bar-card'
@@ -1192,17 +1251,17 @@ views:
                   - column: 3
                     entities:
                       - entities:
-                          - entity: switch.presa_asciugatrice
+                          - entity: switch.smartplug_01
                             icon: 'mdi:power-socket-eu'
                             image: /local/images/icons/plug__on.svg?v=0.3
                             offImage: /local/images/icons/plug__off.svg?v=0.3
-                            state: sensor.plug_dryer_current_consumption
+                            state: sensor.smartplug_01_consumption
 
-                          - entity: switch.presa_lavastoviglie
+                          - entity: switch.smartplug_02
                             icon: 'mdi:power-socket-eu'
                             image: /local/images/icons/plug__on.svg?v=0.3
                             offImage: /local/images/icons/plug__off.svg?v=0.3
-                            state: sensor.plug_dishwasher_consumption
+                            state: sensor.smartplug_02_consumption
 
                           - entity: switch.bf99cef22ec6683bbbnhjv
                             image: /local/images/icons/plug__on.svg?v=0.3
@@ -1585,6 +1644,156 @@ views:
         #view to complete
 
 
+
+  #############################################################################################################################################
+  #                                                                                                                                           #
+  #                                                               Temperature View                                                            #
+  #                                                                                                                                           #
+  #############################################################################################################################################
+
+  - title: Temperature     
+    path: temperature   
+    icon: mdi:thermometer
+    panel: true
+    cards:
+      - <<: *main-bg
+        elements:
+          - type: 'custom:mini-graph-card'
+            name: Temperatura
+            icon: 'mdi:thermometer'
+            line_width: 1
+            hour24: true
+            smoothing: true
+            entities:
+              - entity: sensor.lumi_lumi_weather_cee68205_temperature
+                name: Soggiorno
+                color: rgb(231, 76, 60)
+              - entity: sensor.lumi_lumi_weather_89069d01_temperature
+                name: Cucina
+                color: rgb(255,152,0)
+              - entity: sensor.lumi_lumi_weather_38128005_temperature
+                name: Camera
+                color: rgb(46, 204, 113)
+              - entity: sensor.lumi_lumi_weather_4b8a8205_temperature
+                name: Cameretta
+                color: rgb(26, 188, 156)
+              - entity: sensor.lumi_lumi_weather_978c8205_temperature
+                name: Bagno
+                color: rgb(23, 87, 180)
+              - entity: sensor.lumi_lumi_weather_468d8205_temperature
+                name: Bagnetto
+                color: rgb(52, 152, 219)
+              - entity: sensor.lumi_lumi_weather_7f8d8205_temperature
+                name: Corridoio
+                color: rgb(87, 92, 98)
+              - entity: sensor.lumi_lumi_weather_80069d01_temperature
+                name: Ripostiglio
+                color: rgb(52, 73, 94)
+            style: |
+              :host {
+                left: 61.5%;
+                top:  27%;
+                width: 70%;
+                overflow: hidden;
+                height: 40%;
+                background: none !important;
+                box-shadow: none !important;
+
+                --primary-text-color: rgba(255,255,255,0.9);
+                --paper-item-icon-color: rgba(255,255,255, 0.9);
+                --primary-background-color: rgba(255,255,255, 0.3);
+                --bar-card-border-radius: 4px;
+                --paper-font-body1_-_font-size: 1.3vw;
+                --mdc-icon-size: 16px;
+              }
+              ha-card{
+                    background: transparent;
+                    box-shadow: unset;
+                    padding: 0 !important;
+              }
+
+
+          - type: 'custom:mini-graph-card'
+            name: Umidità
+            icon: 'mdi:water-percent'
+            line_width: 1
+            hour24: true
+            smoothing: true
+            entities:
+              - entity: sensor.lumi_lumi_weather_cee68205_humidity
+                name: Soggiorno
+                color: rgb(231, 76, 60)
+              - entity: sensor.lumi_lumi_weather_89069d01_humidity
+                name: Cucina
+                color: rgb(255,152,0)
+              - entity: sensor.lumi_lumi_weather_38128005_humidity
+                name: Camera
+                color: rgb(46, 204, 113)
+              - entity: sensor.lumi_lumi_weather_4b8a8205_humidity
+                name: Cameretta
+                color: rgb(26, 188, 156)
+              - entity: sensor.lumi_lumi_weather_978c8205_humidity
+                name: Bagno
+                color: rgb(23, 87, 180)
+              - entity: sensor.lumi_lumi_weather_468d8205_humidity
+                name: Bagnetto
+                color: rgb(52, 152, 219)
+              - entity: sensor.lumi_lumi_weather_7f8d8205_humidity
+                name: Corridoio
+                color: rgb(87, 92, 98)
+              - entity: sensor.lumi_lumi_weather_80069d01_humidity
+                name: Ripostiglio
+                color: rgb(52, 73, 94)
+            style: |
+              :host {
+                left: 61.5%;
+                top:  71%;
+                width: 70%;
+                overflow: hidden;
+                height: 40%;
+                background: none !important;
+                box-shadow: none !important;
+
+                --primary-text-color: rgba(255,255,255,0.9);
+                --paper-item-icon-color: rgba(255,255,255, 0.9);
+                --primary-background-color: rgba(255,255,255, 0.3);
+                --bar-card-border-radius: 4px;
+                --paper-font-body1_-_font-size: 1.3vw;
+                --mdc-icon-size: 16px;
+              }
+              ha-card{
+                    background: transparent;
+                    box-shadow: unset;
+                    padding: 0 !important;
+              }
+
+
+        #################################################################
+        #                                                               #
+        #                             SIDEBAR                           #
+        #                                                               #
+        #################################################################  
+
+          - <<: *sidebar-bg
+
+          - <<: *sidebar-time
+          - <<: *sidebar-date
+
+          - <<: *sidebar-menu-1
+          - <<: *sidebar-menu-2
+          - <<: *sidebar-menu-3
+          - <<: *sidebar-menu-4
+          #- <<: *sidebar-menu-5
+
+          - <<: *sidebar-person-fabio
+          - <<: *sidebar-person-rosita
+          - <<: *sidebar-person-giovanna
+          - <<: *sidebar-person-graziella
+          - <<: *sidebar-person-paolo      
+
+          - <<: *sidebar-weather
+          - <<: *sidebar-temperature
+          - <<: *sidebar-bg-overlay      
 
 
   #############################################################################################################################################

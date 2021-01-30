@@ -103,6 +103,7 @@ recorder:
       - sun
       - frontend
       - group
+      - script
     entity_globs:
       - binary_sensor.*_overheating
       - binary_sensor.*_overpowering
@@ -111,6 +112,8 @@ recorder:
       - sensor.*_channel_*_energy
       - sensor.shellyem_e45b64_channel_2_*
       - sensor.epson_xp_*_ink
+      - sensor.lumi_lumi_weather_*_power
+      - sensor.fritz_*
     entities:
       - sensor.last_boot # Comes from 'systemmonitor' sensor platform
       - binary_sensor.tv_ping
@@ -156,6 +159,7 @@ history:
       - sensor.time
       - sensor.day
       - sensor.month
+      - sensor.myip
       - sensor.date_string
       - switch.tvpower
       - remote.rm_mini_3_remote
@@ -174,6 +178,8 @@ history:
       - sensor.shellyswitch25_*_channel_*_power
       - sensor.shellyem_e45b64_channel_2_*
       - sensor.epson_xp_*_ink
+      - sensor.lumi_lumi_weather_*_power
+      - sensor.fritz_*      
 
 
 ####################################################
@@ -284,7 +290,7 @@ sensor:
 
 # https://www.home-assistant.io/integrations/fritzbox_netmonitor/
   - platform: fritzbox_netmonitor
-    name: 'FritbozNetMonitor'
+    name: 'FritzBoxNetMonitor'
     host: !secret ip_fritzbox
 
 
@@ -349,35 +355,35 @@ sensor:
        # https://community.home-assistant.io/t/tuya-local-with-energy-monitoring-and-without-tuya-convert/173564
 
 
-#      plug_dryer_voltage:
+#      smartplug_01_voltage:
 #        friendly_name: "Presa Asciugatrice - Voltaggio"
 #        unit_of_measurement: 'V'
-#        value_template: "{{ states.switch.presa_asciugatrice.attributes.voltage }}"
+#        value_template: "{{ states.switch.smartplug_01.attributes.voltage }}"
       
-#      plug_dryer_current:
+#      smartplug_01_current:
 #        friendly_name: "Presa Asciugatrice - Potenza"
 #        unit_of_measurement: 'mA'
-#        value_template: "{{ states.switch.presa_asciugatrice.attributes.current }}"
+#        value_template: "{{ states.switch.smartplug_01.attributes.current }}"
       
-      plug_dryer_current_consumption:
+      smartplug_01_consumption:
         friendly_name: "Presa Asciugatrice - Consumo"
         unit_of_measurement: 'W'
-        value_template: "{{ states.switch.presa_asciugatrice.attributes.current_consumption }}"
+        value_template: "{{ states.switch.smartplug_01.attributes.current_consumption }}"
 
-#      plug_dishwasher_voltage:
-#        friendly_name: "Presa Lavastoviglie - Voltaggio"
+#      smartplug_02_voltage:
+#        friendly_name: "Presa kiosk - Voltaggio"
 #        unit_of_measurement: 'V'
-#        value_template: "{{ states.switch.presa_lavastoviglie.attributes.voltage }}"
+#        value_template: "{{ states.switch.smartplug_02.attributes.voltage }}"
 
-#      plug_dishwasher_current:
-#        friendly_name: "Presa Lavastoviglie - Potenza"
+#      smartplug_02_current:
+#        friendly_name: "Presa kiosk - Potenza"
 #        unit_of_measurement: 'mA'
-#        value_template: "{{ states.switch.presa_lavastoviglie.attributes.current }}"
+#        value_template: "{{ states.switch.smartplug_02.attributes.current }}"
 
-      plug_dishwasher_consumption:
-        friendly_name: "Presa Lavastoviglie - Consumo"
+      smartplug_02_consumption:
+        friendly_name: "Presa Kiosk - Consumo"
         unit_of_measurement: 'W'
-        value_template: "{{ states.switch.presa_lavastoviglie.attributes.current_consumption }}"
+        value_template: "{{ states.switch.smartplug_02.attributes.current_consumption }}"
 
 
 
@@ -487,7 +493,8 @@ duckdns:
 http:
   use_x_forwarded_for: true
   trusted_proxies: 
-    - 172.22.0.2
+    - 172.24.0.2 #caddy
+    - 172.22.0.2 #swag
     - 172.20.0.2
     - 127.0.0.1
   ip_ban_enabled: true

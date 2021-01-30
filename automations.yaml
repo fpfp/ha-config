@@ -245,20 +245,20 @@
 - alias: "Tablet - Start charging"
   trigger:
     - platform: time
-      at: "10:30:00"
+      at: "08:00:00"
   action:
     - service: switch.turn_on
       data:
-        entity_id: switch.presa_lavastoviglie
+        entity_id: switch.smartplug_02
 
 - alias: "Tablet - Stop charging"
   trigger:
     - platform: time
-      at: "18:00:00"
+      at: "20:00:00"
   action:
     - service: switch.turn_off
       data:
-        entity_id: switch.presa_lavastoviglie
+        entity_id: switch.smartplug_02
 
 
 - alias: "Kiosk - Turn on screen"
@@ -416,7 +416,7 @@
       entity_id: sensor.lavatrice
       from: "off"
       to: "on"
-  condition: "{{ state_attr('sensor.lavatrice', 'pre_state') == 'Centrifuga' or state_attr('sensor.lavatrice', 'pre_state') == 'Completato' }}"
+  condition: "{{ state_attr('sensor.lavatrice', 'pre_state') == 'Centrifuga'}}"
   action:
     - service: notify.pbf
       data:
