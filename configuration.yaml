@@ -20,6 +20,14 @@ wake_on_lan:
 logger:
   default: info
 
+####################################################
+#                                                  #
+#                    Frontend                      #
+#                                                  #
+####################################################
+# https://www.home-assistant.io/integrations/frontend/
+frontend:
+  themes: !include_dir_merge_named themes/
 
 
 ####################################################
@@ -154,7 +162,6 @@ history:
       - binary_sensor.tv_ping
       - timer.tv_delay
       - input_boolean.tv_power_status
-      - input_boolean.ismartalarm_status
       - sensor.date
       - sensor.time
       - sensor.day
@@ -232,11 +239,10 @@ timer: # It takes 10 seconds for my tv to connect / disconnect from the network
 input_boolean:
   tv_power_status: #store temporary TV power state while we are waiting for the TV ping to update
     name: TV Power Status
-
-#https://www.home-assistant.io/integrations/input_text/
-input_text:
-  ismartalarm_status: 
-    name: iSmartAlarm Status
+  shellyswitch25_c4e381_channel_1_loading:
+    initial: off
+  shellyswitch25_c469f5_channel_1_loading:
+    initial: off
 
 
 
@@ -305,6 +311,34 @@ sensor:
 # https://www.home-assistant.io/integrations/uptime/
 # https://community.home-assistant.io/t/uptime-in-days-hours-and-minutes/180916/21
   - platform: uptime
+
+
+# https://www.home-assistant.io/integrations/miflora/
+  - platform: miflora
+    name: miflora_1
+    mac: "C4:7C:8D:6B:FF:96"
+    force_update: true
+    median: 3
+    go_unavailable_timeout: 43200
+    monitored_conditions:
+      - moisture
+      - light
+      - temperature
+      - conductivity
+      - battery
+
+  - platform: miflora
+    name: miflora_2
+    mac: "C4:7C:8D:6B:AB:EC"
+    force_update: true
+    median: 3
+    go_unavailable_timeout: 43200
+    monitored_conditions:
+      - moisture
+      - light
+      - temperature
+      - conductivity
+      - battery      
 
 
   - platform: template
@@ -498,7 +532,7 @@ http:
     - 172.20.0.2
     - 127.0.0.1
   ip_ban_enabled: true
-  login_attempts_threshold: 3
+  login_attempts_threshold: 5
 
 
 ####################################################
@@ -521,8 +555,7 @@ ifttt:
 # https://www.home-assistant.io/integrations/shell_command/
 shell_command:
   curl_duckdns: curl -X GET 'https://www.duckdns.org/update?domains={{ domain }}&token={{ token }}&ip='
-  curl_ifttt_ismartalarm: curl -X POST 'https://maker.ifttt.com/trigger/{{ applet }}/with/key/{{ key }}'
-
+  clear_logs: truncate -s 0 /config/home-assistant.log
 
 
 ####################################################
@@ -591,15 +624,20 @@ media_player:
 ####################################################
 # https://www.home-assistant.io/integrations/alarm_control_panel/
 # https://www.home-assistant.io/integrations/manual/
-# https://community.home-assistant.io/t/example-of-the-manual-alarm/14658/21
 alarm_control_panel:
   - platform: manual
-    name: iSmartAlarm
+    name: home_alarm
     code: !secret alarm_code
-    code_arm_required: true
-    arming_time: 5
-    delay_time: 0
-    trigger_time: 0
+    code_arm_required: true # Require the code to arm the alarm
+    disarm_after_trigger: false # Arm again after triggering
+    arming_time: 300 # Delay from arming and becoming armed, eg. to leave the house.
+    delay_time: 120 # Allow time to disarm the alarm before it triggers, eg. when arriving home
+    trigger_time: 600 # Amount of time the alarm is triggered for
+    disarmed:
+      trigger_time: 0 # Ensure the alarm can never be directly triggered when disarmed
+    armed_home:
+      arming_time: 0 # Leave no delay between arming -> armed
+      delay_time: 0 # Leave no delay between pending -> triggered
 
 
 ####################################################
@@ -713,7 +751,7 @@ spotcast:
 #    exclude_entities:
 #      - switch.tvpower
 #  entity_config:
-#    alarm_control_panel.ismartalarm:
+#    alarm_control_panel.home_alarm:
 #      code: !secret alarm_code
 #    switch.02283024dc4f225abec8:
 #      type: outlet
@@ -771,9 +809,6 @@ lovelace:
       # https://github.com/thomasloven/lovelace-card-mod
     - url: /local/js/card-mod.js?v=2.0.3
       type: module
-      # https://github.com/maykar/custom-header
-    - url: /local/js/custom-header.js?v=1.8.3
-      type: module
       # https://github.com/kalkih/mini-graph-card
     - url: /local/js/mini-graph-card-bundle.js?v=0.9.4
       type: module
@@ -801,8 +836,7 @@ lovelace:
       # https://github.com/lukevink/home-assistant-custom-iframe
     - url: /local/js/custom-iframe-card.js?v=1.0
       type: module
-#    - url: /local/font.css?v=0.1.0
-#      type: css
+
     
   dashboards:
     dashboard-kiosk: # Needs to contain a hyphen (-)

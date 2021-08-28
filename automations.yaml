@@ -25,216 +25,106 @@
 
 ####################################################
 #                                                  #
-#                    iSmartAlarm                   #
+#                      HA Alarm                    #
 #                                                  #
 ####################################################
-- alias: "iSmartAlarm Webhook - Get DISARM from IFTTT"
+- alias: 'Trigger alarm while armed away'
   trigger:
-    - platform: event
-      event_type: ifttt_webhook_received
-      event_data:
-        action: call_service
-  condition: "{{ trigger.event.data.service == 'ismartalarm_mode' and trigger.event.data.mode == 'Disarm' and not is_state('input_text.ismartalarm_status', 'disarmed') }}"
+      # Porta Ingresso
+    - platform: state
+      entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_a9b39306_on_off
+      from: 'off'
+      to: 'on'
+      # Porta finestra Soggiorno
+    - platform: state
+      entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_431b9b06_on_off
+      from: 'off'
+      to: 'on'
+      # Porta finestra Cucina
+    - platform: state
+      entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_441a9b06_on_off
+      from: 'off'
+      to: 'on'
+      # Porta finestra Cameretta
+    - platform: state
+      entity_id: binary_sensor.lumi_lumi_sensor_magnet_aq2_cbb79306_on_off
+      from: 'off'
+      to: 'on'
+  condition:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: armed_away
   action:
-    - service: input_text.set_value
-      data:
-        entity_id: input_text.ismartalarm_status
-        value: disarmed
-    - service: alarm_control_panel.alarm_disarm
-      data: 
-        entity_id: alarm_control_panel.ismartalarm
-        code: !secret alarm_code
-    - service: system_log.write
-      data:
-        message: "IFTTT - iSmartAlarm Webhook - {{ trigger.event.data.mode }} "
-        level: warning
+    service: alarm_control_panel.alarm_trigger
+    target:
+      entity_id: alarm_control_panel.home_alarm
 
-- alias: "iSmartAlarm Webhook - Get ARMED AWAY from IFTTT"
+
+- alias: 'Send notification when alarm triggered'
   trigger:
-    - platform: event
-      event_type: ifttt_webhook_received
-      event_data:
-        action: call_service
-  condition: "{{ trigger.event.data.service == 'ismartalarm_mode' and trigger.event.data.mode == 'Arm' and not is_state('input_text.ismartalarm_status', 'armed_away') }}"
+    - platform: state
+      entity_id: alarm_control_panel.home_alarm
+      to: "triggered"
   action:
-    - service: input_text.set_value
-      data:
-        entity_id: input_text.ismartalarm_status
-        value: armed_away
-    - service: alarm_control_panel.alarm_arm_away
-      data:
-        entity_id: alarm_control_panel.ismartalarm
-        code: !secret alarm_code
-    - service: system_log.write
-      data:
-        message: "IFTTT - iSmartAlarm Webhook - {{ trigger.event.data.mode }} "
-        level: warning
-
-- alias: "iSmartAlarm Webhook - Get ARMED HOME from IFTTT"
-  trigger:
-    - platform: event
-      event_type: ifttt_webhook_received
-      event_data:
-        action: call_service
-  condition: "{{ trigger.event.data.service == 'ismartalarm_mode' and trigger.event.data.mode == 'Home' and not is_state('input_text.ismartalarm_status', 'armed_home') }}"
-  action:
-    - service: input_text.set_value 
-      data:
-        entity_id: input_text.ismartalarm_status
-        value: armed_home
-    - service: alarm_control_panel.alarm_arm_home
-      data:
-        entity_id: alarm_control_panel.ismartalarm
-        code: !secret alarm_code
-    - service: system_log.write
-      data:
-        message: "IFTTT - iSmartAlarm Webhook - {{ trigger.event.data.mode }} "
-        level: warning
-
-- alias: "iSmartAlarm Webhook - Get ARMED NIGHT from IFTTT"
-  trigger:
-    - platform: event
-      event_type: ifttt_webhook_received
-      event_data:
-        action: call_service
-  condition: "{{ trigger.event.data.service == 'ismartalarm_mode' and trigger.event.data.mode == 'Notte' and not is_state('input_text.ismartalarm_status', 'armed_night') }}"
-  action:
-    - service: input_text.set_value 
-      data:
-        entity_id: input_text.ismartalarm_status
-        value: armed_night
-    - service: alarm_control_panel.alarm_arm_night
-      data:
-        entity_id: alarm_control_panel.ismartalarm
-        code: !secret alarm_code
-    - service: system_log.write
-      data:
-        message: "IFTTT - iSmartAlarm Webhook - {{ trigger.event.data.mode }} "
-        level: warning
-
-
-
-- alias: "iSmartAlarm Webhook - Get ALARM TRIGGERED from IFTTT"
-  trigger:
-    - platform: event
-      event_type: ifttt_webhook_received
-      event_data:
-        action: call_service
-  condition: "{{ trigger.event.data.service == 'ismartalarm_trigger' }}"
-  action:
-    - service: alarm_control_panel.alarm_trigger
-      data:
-        entity_id: alarm_control_panel.ismartalarm
-    - service: system_log.write
-      data:
-        message: "IFTTT - iSmartAlarm Webhook - {{ trigger.event.data.datetime }} - {{ trigger.event.data.device }} - {{ trigger.event.data.msg }}"
-        level: error
     - service: notify.pbf
       data:
-        message: "ALARM! The alarm has been triggered"
+        title: "Allarme scattato"
+        message: "Attenzione! L'allarme è stato fatto scattare"
 
-
-
-- alias: "iSmartAlarm Webhook - Send DISARM to IFTTT"
+- alias: 'Send notification when alarm is Disarmed'
   trigger:
     - platform: state
-      entity_id: alarm_control_panel.ismartalarm
-      to: 'disarmed' 
-  condition: "{{ not is_state('input_text.ismartalarm_status', 'disarmed') }}"
+      entity_id: alarm_control_panel.home_alarm
+      to: "disarmed"
   action:
-    - service: shell_command.curl_ifttt_ismartalarm
+    - service: notify.pbf
       data:
-        key: !secret ifttt_key_fp
-        applet: disarm_alarm
-    - service: input_text.set_value
-      data:
-        entity_id: input_text.ismartalarm_status
-        value: disarmed
-    - service: system_log.write
-      data:
-        message: "iSmartAlarm: Disarmed"
-        level: warning
+        title: "Allarme disattivato"
+        message: "Allarme disattivato alle {{ states('sensor.date') }} {{ states('sensor.time') }}"
 
-- alias: "iSmartAlarm Webhook - Send ARMED AWAY to IFTTT"
+- alias: 'Send notification when alarm is in pending status'
   trigger:
     - platform: state
-      entity_id: alarm_control_panel.ismartalarm
-      to: 'armed_away'
-  condition: "{{ not is_state('input_text.ismartalarm_status', 'armed_away') }}"
+      entity_id: alarm_control_panel.home_alarm
+      to: "pending"
   action:
-    - service: shell_command.curl_ifttt_ismartalarm
+    - service: notify.pbf
       data:
-        key: !secret ifttt_key_fp
-        applet: arm_alarm
-    - service: input_text.set_value
-      data:
-        entity_id: input_text.ismartalarm_status
-        value: armed_away
-    - service: system_log.write
-      data:
-        message: "iSmartAlarm: Armed Away"
-        level: warning
+        title: "Allarme in attesa"
+        message: "Allarme in attesa alle {{ states('sensor.date') }}"
 
-
-- alias: "iSmartAlarm Webhook - Send ARMED HOME to IFTTT"
+- alias: 'Send notification when alarm is Armed in Away mode'
   trigger:
     - platform: state
-      entity_id: alarm_control_panel.ismartalarm
-      to: 'armed_home'
-  condition: "{{ not is_state('input_text.ismartalarm_status', 'armed_home') }}"
+      entity_id: alarm_control_panel.home_alarm
+      to: "armed_away"
   action:
-    - service: shell_command.curl_ifttt_ismartalarm
+    - service: notify.pbf
       data:
-        key: !secret ifttt_key_rp
-        applet: arm_home
-    - service: input_text.set_value 
-      data:
-        entity_id: input_text.ismartalarm_status
-        value: armed_home
-    - service: system_log.write
-      data:
-        message: "iSmartAlarm: Armed Home"
-        level: warning
+        title: "Allarme attivato"
+        message: "Allarme in modalità Fuori Casa {{ states('sensor.date') }} {{ states('sensor.time') }}"
 
-- alias: "iSmartAlarm Webhook - Send ARMED NIGHT to IFTTT"
+- alias: 'Send notification when alarm is Armed in Home mode'
   trigger:
     - platform: state
-      entity_id: alarm_control_panel.ismartalarm
-      to: 'armed_night'
-  condition: "{{ not is_state('input_text.ismartalarm_status', 'armed_night') }}"
-  action:  
-    - service: shell_command.curl_ifttt_ismartalarm
+      entity_id: alarm_control_panel.home_alarm
+      to: "armed_home"
+  action:
+    - service: notify.pbf
       data:
-        key: !secret ifttt_key_rp
-        applet: arm_night
-    - service: input_text.set_value
+        title: "Allarme attivato"
+        message: "Allarme in modalità Casa {{ states('sensor.date') }} {{ states('sensor.time') }}"
+
+- alias: 'Send notification when alarm is Armed in Night mode'
+  trigger:
+    - platform: state
+      entity_id: alarm_control_panel.home_alarm
+      to: "armed_night"
+  action:
+    - service: notify.pbf
       data:
-        entity_id: input_text.ismartalarm_status
-        value: armed_night 
-    - service: system_log.write
-      data:
-        message: "iSmartAlarm: Armed Night"
-        level: warning
-
-
-####################################################
-#                                                  #
-#                    Lavatrice                     #
-#                                                  #
-####################################################
-# https://github.com/ollo69/ha-smartthinq-sensors
-#- alias: "Lavatrice - Wash completed"
-#  trigger:
-#    - platform: state
-#      entity_id: binary_sensor.lavatrice_wash_completed
-#      from: "off"
-#      to: "on"
-#  action:
-#    - service: notify.pbf
-#      data:
-#        title: "Lavatrice - Lavaggio completato"
-#        message: "Vai a svuotare la lavatrice!"
-
+        title: "Allarme attivato"
+        message: "Allarme in modalità Notte {{ states('sensor.date') }} {{ states('sensor.time') }}"
 
 
 ####################################################
@@ -245,7 +135,7 @@
 - alias: "Tablet - Start charging"
   trigger:
     - platform: time
-      at: "08:00:00"
+      at: "07:00:00"
   action:
     - service: switch.turn_on
       data:
@@ -307,14 +197,14 @@
 
 - alias: "Power consumption - Send alert > 3kw"
   trigger:
-    platform: numeric_state
-    entity_id: sensor.shellyem_e45b64_channel_1_power
-    above: 3100
-    below: 4000
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
+    - platform: numeric_state
+      entity_id: sensor.shellyem_e45b64_channel_1_power
+      above: 3100
+      below: 4000
+      for:
+        hours: 0
+        minutes: 3
+        seconds: 0
   action:
     - service: notify.pbf
       data:
@@ -325,14 +215,14 @@
 
 - alias: "Power consumption - Send alert > 4kw"
   trigger:
-    platform: numeric_state
-    entity_id: sensor.shellyem_e45b64_channel_1_power
-    above: 4000
-    below: 5000
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
+    - platform: numeric_state
+      entity_id: sensor.shellyem_e45b64_channel_1_power
+      above: 4000
+      below: 5000
+      for:
+        hours: 0
+        minutes: 1
+        seconds: 0
   action:
     - service: notify.pbf
       data:
@@ -343,14 +233,14 @@
 
 - alias: "RPI - CPU High temperature"
   trigger:
-    platform: numeric_state
-    entity_id: sensor.processor_temperature
-    above: 65
-    below: 80
-    for:
-      hours: 0
-      minutes: 5
-      seconds: 0
+    - platform: numeric_state
+      entity_id: sensor.processor_temperature
+      above: 65
+      below: 80
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
   action:
     - service: notify.pbf
       data:
@@ -361,7 +251,7 @@
 
 - alias: "Kiosk Offline"
   trigger:
-      platform: state
+    - platform: state
       entity_id: sensor.kiosk
       to: '0'
       for:
@@ -378,7 +268,7 @@
 
 - alias: "Internet Offline"
   trigger:
-      platform: state
+    - platform: state
       entity_id: binary_sensor.internet_access
       to: 'off'
       for:
@@ -395,7 +285,7 @@
 
 - alias: "Power down"
   trigger:
-      platform: state
+    - platform: state
       entity_id: sensor.shellyem_e45b64_channel_1_power
       to: 'unavailable'
       for:
@@ -414,12 +304,12 @@
   trigger:
     - platform: state
       entity_id: sensor.lavatrice
-      from: "off"
-      to: "on"
+      from: "on"
+      to: "off"
   condition: "{{ state_attr('sensor.lavatrice', 'pre_state') == 'Centrifuga'}}"
   action:
     - service: notify.pbf
       data:
         title: "Lavatrice - Lavaggio completato"
-        message: "Vai a svuotare la lavatrice!"
+        message: "Vai a svuotare la lavatrice! {{ state_attr('sensor.lavatrice', 'pre_state') }}"
 

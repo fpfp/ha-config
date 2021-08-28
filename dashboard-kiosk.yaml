@@ -15,6 +15,46 @@ anchors:
   colors: &bg-color 'rgba(42, 46, 48, 1)'
   colors: &bg-highlight-color 'rgba(255, 255, 255, 0.05)'
 
+  alarm-icon-style: &alarm-icon-style
+    show_name: true
+    show_state: false
+    show_units: false
+    show_label: false
+    size: 60%
+    styles:
+      card:
+        - border-radius: 0
+        - overflow: hidden
+        - width: 8vw
+        - height: 8vw
+        - box-shadow: unset
+        - background-color: unset
+        - color: rgba(255,255,255,0.7)
+      img_cell: 
+        - border-radius: 50%
+        - border: 1px solid rgba(255, 255, 255, 0.7)
+        - height: 5vw
+        - width: 5vw
+      icon:
+        - color: rgba(255,255,255,0.7)
+        - width: 60%
+      name:
+        - font-size: 13px
+        - color: rgba(255,255,255,0.7)
+    state:
+      - value: 'on'
+        icon: 'mdi:door-open'
+        styles:
+          icon:
+            - color: '#df4c1e'
+          img_cell: 
+            - border: '1px solid #df4c1e'   
+      - value: 'off'
+        icon: 'mdi:door-closed'
+    tap_action:
+      action: none
+
+
   icon-style: &icon-style
     show_name: false
     show_state: false
@@ -25,8 +65,8 @@ anchors:
       card:
         - border-radius: 50%
         - overflow: hidden
-        - width: 3.5vw
-        - height: 3.5vw
+        - width: 4.5vw
+        - height: 4.5vw
         - box-shadow: '0px 0px 30px 0px rgba(0,0,0,0.4)'
     state:
       - value: 'on'
@@ -507,18 +547,6 @@ anchors:
 
 
 
-
-custom_header:
-  # https://github.com/maykar/custom-header/issues/269#issuecomment-703093693 fix kiosk mode bottom space
-  view_css: 'margin-top: -100px !important; min-height: calc(100vh - 100px) !important;'
-  panel_view_css: 'margin-top: -100px !important; min-height: calc(100vh - 100px) !important;'
-  exceptions:
-    - conditions:
-        media_query: "(max-width: 1024px)"
-      config:
-        kiosk_mode: true
-
-
 title: Kiosk
 views:
 
@@ -686,7 +714,7 @@ views:
         entity: group.boxroom_lights
         icon: 'mdi:ceiling-light'
         style:
-          top: 90%
+          top: 89%
           left: 66%
         <<: *icon-style
 
@@ -698,6 +726,12 @@ views:
           top: 73%
           left: 65%
         <<: *icon-style
+        tap_action:
+          action: call-service
+          service: script.kiosk_toggle
+          service_data:
+            entity_id: switch.shellyswitch25_c4e381_channel_1
+      
 
       # Cucina
       - type: custom:button-card
@@ -713,7 +747,7 @@ views:
         entity: switch.shellyswitch25_e5a302_channel_1
         icon: 'mdi:ceiling-light'
         style:
-          top: 53%
+          top: 52%
           left: 63%
         <<: *icon-style
 
@@ -721,7 +755,7 @@ views:
         entity: switch.shellyswitch25_e5a302_channel_2
         icon: 'mdi:ceiling-light'
         style:
-          top: 53%
+          top: 52%
           left: 44%
         <<: *icon-style
 
@@ -1496,10 +1530,47 @@ views:
       - <<: *main-bg
         elements:
         
+          - type: custom:button-card
+            entity: binary_sensor.lumi_lumi_sensor_magnet_aq2_a9b39306_on_off
+            icon: 'mdi:door-closed'
+            name: 'Ingresso'
+            style:
+              top: 12%
+              left: 43%
+            <<: *alarm-icon-style
+
+          - type: custom:button-card
+            entity: binary_sensor.lumi_lumi_sensor_magnet_aq2_431b9b06_on_off
+            icon: 'mdi:door-closed'
+            name: 'Soggiorno'
+            style:
+              top: 12%
+              left: 55.5%
+            <<: *alarm-icon-style
+
+          - type: custom:button-card
+            entity: binary_sensor.lumi_lumi_sensor_magnet_aq2_441a9b06_on_off
+            icon: 'mdi:door-closed'
+            name: 'Cucina'
+            style:
+              top: 12%
+              left: 68%
+            <<: *alarm-icon-style
+
+
+          - type: custom:button-card
+            entity: binary_sensor.lumi_lumi_sensor_magnet_aq2_cbb79306_on_off
+            icon: 'mdi:door-closed'
+            name: 'Cameretta'
+            style:
+              top: 12%
+              left: 80.5%
+            <<: *alarm-icon-style
+
           # https://github.com/JumpMaster/custom-lovelace/tree/master/alarm_control_panel-card
         
           - type: 'custom:alarm_control_panel-card'
-            entity: alarm_control_panel.ismartalarm
+            entity: alarm_control_panel.home_alarm
             scale: 10px
             states:
                 - arm_home
@@ -1508,7 +1579,7 @@ views:
             style: |
               :host {
                 left: 61.5%;
-                top:  51%;
+                top:  60%;
                 width: 70%;
                 overflow: hidden;
                 height: 80%;

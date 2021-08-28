@@ -38,6 +38,12 @@ kiosk_toggle:
   alias: "Toggle state of Entity and play sound"
   mode: parallel
   sequence:
+    - service: input_boolean.turn_on
+      data_template:
+        entity_id: >-
+          {{ (entity_id + '_loading') | 
+          replace('media_player.', 'input_boolean.') | 
+          replace('switch.', 'input_boolean.') }}  
     - service: switch.toggle
       data_template:
         entity_id: "{{ entity_id }}"        
@@ -51,3 +57,7 @@ kiosk_toggle:
             /local/sound/off.m4a
           {% endif %}
         media_content_type: music    
+    - service: notify.pbf
+      data:
+        title: "Kiosk Toggle"
+        message: "Entity: {{ entity_id }}"        
