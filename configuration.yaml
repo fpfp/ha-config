@@ -293,13 +293,6 @@ sensor:
 # https://www.home-assistant.io/integrations/dnsip/
   - platform: dnsip
 
-
-# https://www.home-assistant.io/integrations/fritzbox_netmonitor/
-  - platform: fritzbox_netmonitor
-    name: 'FritzBoxNetMonitor'
-    host: !secret ip_fritzbox
-
-
 # https://www.home-assistant.io/integrations/dht/
   - platform: dht
     sensor: DHT22
@@ -368,21 +361,6 @@ sensor:
       date_string:
         friendly_name: "Full Date"
         value_template: "{{ states('sensor.day') }}, {{ strptime(states('sensor.date'), '%Y-%m-%d').day }} {{ states('sensor.month') }} {{ now().year }}"
-
-
-
-      # https://appuntinformatica.wordpress.com/2020/04/18/progetto-home-automation-home-assistant-monitoriamo-il-nostro-router-fritzbox-e-impariamo-i-sensor-template/
-      fritz_transmission_rate_up:
-          friendly_name: "FRITZ!Box Upload"
-          unit_of_measurement: 'Kb/s'
-          value_template: "{{ (state_attr('sensor.fritboznetmonitor', 'transmission_rate_up')| int / 1000 ) | round(1) }}"
-
-      fritz_transmission_rate_down:
-          friendly_name: "FRITZ!Box Download"
-          unit_of_measurement: 'Kb/s'
-          value_template: "{{ (state_attr('sensor.fritboznetmonitor', 'transmission_rate_down')| int / 1000 ) | round(1) }}"
-
-
 
 
 

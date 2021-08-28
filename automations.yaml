@@ -209,7 +209,7 @@
     - service: notify.pbf
       data:
         title: "Consumo elettrico > 3kw"
-        message: "{{ sensor.shellyem_e45b64_channel_1_power }} kw - Controlla gli elettrodomestici accesi"
+        message: "{{ states('sensor.shellyem_e45b64_channel_1_power') }} kw - Controlla gli elettrodomestici accesi"
 
 
 
@@ -227,7 +227,7 @@
     - service: notify.pbf
       data:
         title: "Consumo elettrico > 4kw"
-        message: "{{ sensor.shellyem_e45b64_channel_1_power }} kw - Spegni qualche elettrodomestico acceso"
+        message: "{{ states('sensor.shellyem_e45b64_channel_1_power') }} kw - Spegni qualche elettrodomestico acceso"
 
 
 
@@ -245,7 +245,7 @@
     - service: notify.pbf
       data:
         title: "Raspberry - Temperatura CPU elevata"
-        message: "{{ sensor.processor_temperature }}° - Controlla i processi in esecuzione"
+        message: "{{ states('sensor.processor_temperature') }}° - Controlla i processi in esecuzione"
 
 
 

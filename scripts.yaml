@@ -32,7 +32,66 @@ turn_tv_off:
         title: "TV - OFF"
         message: "Samsung TV UE40H6400 - sent turn off"
 
+# https://community.home-assistant.io/t/how-to-get-heiman-siren-with-zha-to-work/180153/23
+turn_alarm_siren_on:
+  alias: Alarm - Siren On
+  mode: single
+  icon: 'mdi:volume-high'
+  sequence:
+    - data:
+        duration: 60
+        duty_cycle: 2
+        ieee: '84:2e:14:ff:fe:f8:08:7a'
+        intensity: 2
+        level: 1
+        mode: 1
+        strobe: 1
+      service: zha.warning_device_warn
 
+turn_alarm_siren_off:
+  alias: Alarm - Siren Off
+  mode: single
+  icon: 'mdi:volume-off'
+  sequence:
+    - data:
+        duration: 60
+        duty_cycle: 2
+        ieee: '84:2e:14:ff:fe:f8:08:7a'
+        intensity: 2
+        level: 1
+        mode: 0
+        strobe: 0
+      service: zha.warning_device_warn
+
+turn_alarm_strobe_on:
+  alias: Alarm - Strobe On
+  mode: single
+  icon: 'mdi:volume-high'
+  sequence:
+    - data:
+        duration: 60
+        duty_cycle: 2
+        ieee: '84:2e:14:ff:fe:f8:08:7a'
+        intensity: 2
+        level: 1
+        mode: 0
+        strobe: 1
+      service: zha.warning_device_warn
+
+turn_alarm_strobe_off:
+  alias: Alarm - Strobe Off
+  mode: single
+  icon: 'mdi:volume-off'
+  sequence:
+    - data:
+        duration: 60
+        duty_cycle: 2
+        ieee: '84:2e:14:ff:fe:f8:08:7a'
+        intensity: 2
+        level: 1
+        mode: 0
+        strobe: 0
+      service: zha.warning_device_warn
 
 kiosk_toggle:
   alias: "Toggle state of Entity and play sound"
