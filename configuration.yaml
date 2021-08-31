@@ -604,7 +604,7 @@ media_player:
 # https://www.home-assistant.io/integrations/manual/
 alarm_control_panel:
   - platform: manual
-    name: home_alarm
+    name: Home Alarm
     code: !secret alarm_code
     code_arm_required: true # Require the code to arm the alarm
     disarm_after_trigger: false # Arm again after triggering
