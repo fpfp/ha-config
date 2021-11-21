@@ -613,7 +613,7 @@ views:
 
       # Soggiorno
       - type: image
-        entity: switch.shellyswitch25_e5a302_channel_1
+        entity: switch.shellyswitch25_8caab55dd23a_channel_1
         tap_action: none
         hold_action: none
         state_image:
@@ -624,7 +624,7 @@ views:
           <<: *image-style
       
       - type: image
-        entity: switch.shellyswitch25_e5a302_channel_2
+        entity: switch.shellyswitch25_8caab55dd23a_channel_2
         tap_action: none
         hold_action: none
         state_image:
@@ -744,7 +744,7 @@ views:
 
       # Soggiorno
       - type: custom:button-card
-        entity: switch.shellyswitch25_e5a302_channel_1
+        entity: switch.shellyswitch25_8caab55dd23a_channel_1
         icon: 'mdi:ceiling-light'
         style:
           top: 52%
@@ -752,7 +752,7 @@ views:
         <<: *icon-style
 
       - type: custom:button-card
-        entity: switch.shellyswitch25_e5a302_channel_2
+        entity: switch.shellyswitch25_8caab55dd23a_channel_2
         icon: 'mdi:ceiling-light'
         style:
           top: 52%
@@ -1171,12 +1171,12 @@ views:
                   - column: 2
                     entities:
                       - entities:
-                          - entity: switch.shellyswitch25_e5a302_channel_1
+                          - entity: switch.shellyswitch25_8caab55dd23a_channel_1
                             icon: 'mdi:ceiling-light'
                             image: /local/images/icons/chandelier_1__on.svg?v=0.3
                             offImage: /local/images/icons/chandelier_1__off.svg?v=0.3
 
-                          - entity: switch.shellyswitch25_e5a302_channel_2
+                          - entity: switch.shellyswitch25_8caab55dd23a_channel_2
                             icon: 'mdi:ceiling-light'
                             image: /local/images/icons/chandelier_1__on.svg?v=0.3
                             offImage: /local/images/icons/chandelier_1__off.svg?v=0.3

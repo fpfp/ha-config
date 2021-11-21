@@ -11,9 +11,9 @@
       state: "off"
     switch.shellyswitch25_c469f5_channel_1:
       state: "off"
-    switch.shellyswitch25_e5a302_channel_1:
+    switch.shellyswitch25_8caab55dd23a_channel_1:
       state: "off"
-    switch.shellyswitch25_e5a302_channel_2:
+    switch.shellyswitch25_8caab55dd23a_channel_2:
       state: "off"
     switch.shellyswitch25_c4e381_channel_1:
       state: "off"

@@ -6,8 +6,8 @@ all_lights:
       - switch.shelly1_c4eeb1
       - switch.shelly1_f3a160
       - switch.shellyswitch25_c469f5_channel_1
-      - switch.shellyswitch25_e5a302_channel_1
-      - switch.shellyswitch25_e5a302_channel_2
+      - switch.shellyswitch25_8caab55dd23a_channel_1
+      - switch.shellyswitch25_8caab55dd23a_channel_2
       - switch.shellyswitch25_c4e381_channel_1
       - switch.shellyswitch25_c4e381_channel_2
       - switch.shellyswitch25_c467b1_channel_1
