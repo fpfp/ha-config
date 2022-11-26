@@ -256,12 +256,12 @@ sensor:
 
 # https://www.home-assistant.io/integrations/mitemp_bt/
 # https://github.com/home-assistant/core/issues/19326#issuecomment-551103628
-  - platform: mitemp_bt
-    mac: !secret mitemp_bt_mac
-    name: Xiaomi T&H Ble
-    monitored_conditions:
-      - temperature
-      - humidity
+#  - platform: mitemp_bt
+#    mac: !secret mitemp_bt_mac
+#    name: Xiaomi T&H Ble
+#    monitored_conditions:
+#      - temperature
+#      - humidity
 
 # https://www.home-assistant.io/integrations/time_date/
   - platform: time_date
@@ -625,11 +625,14 @@ alarm_control_panel:
 ####################################################
 # https://www.home-assistant.io/integrations/notify/
 # https://www.home-assistant.io/integrations/pushbullet/#notifications
+# https://www.home-assistant.io/integrations/simplepush/
 notify:
   - name: pbf
     platform: pushbullet
     api_key: !secret pushbullet_key
-
+  - name: simplepush_fp
+    platform: simplepush
+    device_key: !secret simplepush_key
 
 
 ####################################################

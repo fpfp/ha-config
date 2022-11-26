@@ -1,6 +1,7 @@
 # https://www.home-assistant.io/docs/automation/trigger/
 # https://www.home-assistant.io/integrations/system_log/
 
+
 ####################################################
 #                                                  #
 #                    DuckDns                       #
@@ -66,7 +67,7 @@
       entity_id: alarm_control_panel.home_alarm
       to: "triggered"
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "Allarme scattato"
         message: "Attenzione! L'allarme è stato fatto scattare"
@@ -77,7 +78,7 @@
       entity_id: alarm_control_panel.home_alarm
       to: "disarmed"
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "Allarme disattivato"
         message: "Allarme disattivato alle {{ states('sensor.date') }} {{ states('sensor.time') }}"
@@ -88,7 +89,7 @@
       entity_id: alarm_control_panel.home_alarm
       to: "pending"
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "Allarme in attesa"
         message: "Allarme in attesa alle {{ states('sensor.date') }}"
@@ -99,7 +100,7 @@
       entity_id: alarm_control_panel.home_alarm
       to: "armed_away"
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "Allarme attivato"
         message: "Allarme in modalità Fuori Casa {{ states('sensor.date') }} {{ states('sensor.time') }}"
@@ -110,7 +111,7 @@
       entity_id: alarm_control_panel.home_alarm
       to: "armed_home"
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "Allarme attivato"
         message: "Allarme in modalità Casa {{ states('sensor.date') }} {{ states('sensor.time') }}"
@@ -121,7 +122,7 @@
       entity_id: alarm_control_panel.home_alarm
       to: "armed_night"
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "Allarme attivato"
         message: "Allarme in modalità Notte {{ states('sensor.date') }} {{ states('sensor.time') }}"
@@ -206,7 +207,7 @@
         minutes: 3
         seconds: 0
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "Consumo elettrico > 3kw"
         message: "{{ states('sensor.shellyem_e45b64_channel_1_power') }} kw - Controlla gli elettrodomestici accesi"
@@ -224,7 +225,7 @@
         minutes: 1
         seconds: 0
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "Consumo elettrico > 4kw"
         message: "{{ states('sensor.shellyem_e45b64_channel_1_power') }} kw - Spegni qualche elettrodomestico acceso"
@@ -242,7 +243,7 @@
         minutes: 5
         seconds: 0
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "Raspberry - Temperatura CPU elevata"
         message: "{{ states('sensor.processor_temperature') }}° - Controlla i processi in esecuzione"
@@ -259,7 +260,7 @@
         minutes: 5
         seconds: 0
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "M34 - Kiosk offline"
         message: "Controlla lo stato del tablet"
@@ -276,7 +277,7 @@
         minutes: 1
         seconds: 0
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "M34 - Internet offline"
         message: "Controlla la connessione internet"
@@ -293,7 +294,7 @@
         minutes: 1
         seconds: 0
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "M34 - é saltata la corrente"
         message: "Controlla il quadro elettrico e il contatore"
@@ -308,7 +309,7 @@
       to: "off"
   condition: "{{ state_attr('sensor.lavatrice', 'pre_state') == 'Centrifuga'}}"
   action:
-    - service: notify.pbf
+    - service: notify.simplepush_fp
       data:
         title: "Lavatrice - Lavaggio completato"
         message: "Vai a svuotare la lavatrice! {{ state_attr('sensor.lavatrice', 'pre_state') }}"

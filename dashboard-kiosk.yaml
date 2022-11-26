@@ -474,7 +474,7 @@ anchors:
   sidebar-temperature: &sidebar-temperature
     type: 'custom:mini-graph-card'
     entities:
-      - sensor.xiaomi_t_h_ble_temperature
+      - sensor.lumi_lumi_weather_cee68205_temperature
       - sensor.weather_temperature
     icon: 'mdi:home-thermometer-outline'
     show:
