@@ -116,7 +116,7 @@ kiosk_toggle:
             /local/sound/off.m4a
           {% endif %}
         media_content_type: music    
-    - service: notify.simplepush_fp
+    - service: notify.simplepush
       data:
         title: "Kiosk Toggle"
         message: "Entity: {{ entity_id }}"        

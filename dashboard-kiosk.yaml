@@ -27,6 +27,7 @@ anchors:
         - overflow: hidden
         - width: 8vw
         - height: 8vw
+        - border: none
         - box-shadow: unset
         - background-color: unset
         - color: rgba(255,255,255,0.7)
@@ -155,9 +156,9 @@ anchors:
     style: |
       ha-card {
         background: rgba(42, 46, 48, 1);
-        margin-top: 4px;
+        margin-top: 0;
         border-radius: 0;
-      }      
+      }    
 
 
   #########################    SIDEBAR Background    #########################
@@ -446,6 +447,7 @@ anchors:
         padding: 0 !important;
         font-size: 1.3vw !important;
         font-weight: 300 !important;
+        border: unset !important;
       }
       .weather__info--add{
         display : none !important;
@@ -517,6 +519,7 @@ anchors:
       ha-card {
         background: none  !important;
         padding: 0 !important;
+        border: unset !important
       }
       .icon > ha-icon {
         width:1.8vw !important;
@@ -567,8 +570,9 @@ views:
             ha-card:first-child {
               background: url(/local/images/blurred_bg.jpg?v=0.3) no-repeat center center;
               background-size: cover;
-              margin-top: 4px;
+              margin-top: 0px;
               border-radius: 0;
+              border:0;
             }
       elements:
 
@@ -601,7 +605,7 @@ views:
 
       # Cucina
       - type: image
-        entity: switch.shellyswitch25_c469f5_channel_1
+        entity: switch.shelly1_34945475c839
         tap_action: none
         hold_action: none
         state_image:
@@ -635,7 +639,7 @@ views:
           <<: *image-style
 
       - type: image
-        entity: light.33882720600194e74bc3
+        entity: light.lampada
         tap_action: none
         hold_action: none
         state_image:
@@ -735,7 +739,7 @@ views:
 
       # Cucina
       - type: custom:button-card
-        entity: switch.shellyswitch25_c469f5_channel_1
+        entity: switch.shelly1_34945475c839
         icon: 'mdi:ceiling-light'
         style:
           top: 49%
@@ -760,7 +764,7 @@ views:
         <<: *icon-style
 
       - type: custom:button-card
-        entity: light.33882720600194e74bc3
+        entity: light.lampada
         icon: 'mdi:floor-lamp'
         hold_action:
           action: call-service
@@ -768,7 +772,7 @@ views:
           service_data:
             card:
               type: custom:light-popup-card
-              entity: light.33882720600194e74bc3
+              entity: light.lampada
             deviceID:
               - this
             title: Lampada
@@ -955,10 +959,12 @@ views:
             --mdc-icon-size: 16px;
             --ha-card-background: transparent;
             --ha-card-box-shadow: unset;
+            --ha-card-border: unset;
           }
           ha-card{
                 box-shadow: unset;
                 padding: 0 !important;
+                border: unset;
           }
           bar-card-value{
             margin: 4px 10px;
@@ -1017,11 +1023,13 @@ views:
             --mdc-icon-size: 16px;
             --ha-card-background: transparent;
             --ha-card-box-shadow: unset;
+            --ha-card-border: unset;
           }
           ha-card{
                 background: transparent;
                 box-shadow: unset;
                 padding: 0 !important;
+                border: unset;
           }
           bar-card-value{
             margin: 4px 10px;
@@ -1160,7 +1168,7 @@ views:
                             image: /local/images/icons/led_applique__on.svg?v=0.3
                             offImage: /local/images/icons/led_applique__off.svg?v=0.3
 
-                          - entity: switch.bf6851b011ec5a759drz6s
+                          - entity: switch.albero_di_natale_socket_1
                             icon: 'mdi:power-socket-eu'
                             image: /local/images/icons/plug__on.svg?v=0.3
                             offImage: /local/images/icons/plug__off.svg?v=0.3
@@ -1181,7 +1189,7 @@ views:
                             image: /local/images/icons/chandelier_1__on.svg?v=0.3
                             offImage: /local/images/icons/chandelier_1__off.svg?v=0.3
 
-                          - entity: light.33882720600194e74bc3
+                          - entity: light.lampada
                             slider: true
                             popup:
                               type: custom:light-popup-card
@@ -1200,7 +1208,7 @@ views:
                   - column: 3
                     entities:
                       - entities:
-                          - entity: switch.shellyswitch25_c469f5_channel_1
+                          - entity: switch.shelly1_34945475c839
                             icon: 'mdi:ceiling-light'
                             image: /local/images/icons/chandelier_2__on.svg?v=0.3
                             offImage: /local/images/icons/chandelier_2__off.svg?v=0.3
@@ -1290,23 +1298,20 @@ views:
                   - column: 3
                     entities:
                       - entities:
-                          - entity: switch.smartplug_01
+
+                          - entity: switch.asciugatrice_socket_1
                             icon: 'mdi:power-socket-eu'
                             image: /local/images/icons/plug__on.svg?v=0.3
                             offImage: /local/images/icons/plug__off.svg?v=0.3
-                            state: sensor.smartplug_01_consumption
+                            state: sensor.asciugatrice_power
 
-                          - entity: switch.smartplug_02
+                          - entity: switch.kiosk_socket_1
                             icon: 'mdi:power-socket-eu'
                             image: /local/images/icons/plug__on.svg?v=0.3
                             offImage: /local/images/icons/plug__off.svg?v=0.3
-                            state: sensor.smartplug_02_consumption
+                            state: sensor.kiosk_power
 
-                          - entity: switch.bf99cef22ec6683bbbnhjv
-                            image: /local/images/icons/plug__on.svg?v=0.3
-                            offImage: /local/images/icons/plug__off.svg?v=0.3
-
-                          - entity: switch.02283024dc4f225abec8
+                          - entity: switch.stampante_socket_1
                             image: /local/images/icons/plug__on.svg?v=0.3
                             offImage: /local/images/icons/plug__off.svg?v=0.3
 
@@ -1403,10 +1408,12 @@ views:
                 width: 39% !important;
                 height: 62.3% !important;
                 --ha-card-background: rgba(255,255,255,0.05);
+                --ha-card-border: unset;
               }
               ha-card{
                 border-radius: 1vw !important;
                 overflow: hidden !important;
+                border: unset;
                 height: 100%;
               }
               .mmp-player{
@@ -1447,6 +1454,7 @@ views:
                 background: transparent;
                 box-shadow: unset;
                 padding: 0 !important;
+                border: unset;
               }
               #header{
                 display:none !important;
@@ -1590,17 +1598,21 @@ views:
                 height: 80%;
                 background: none !important;
                 box-shadow: none !important;
+                text-align: center;
 
+                --ha-card-header-font-size: 20px;
                 --mdc-icon-size: 50px;
                 --mdc-theme-primary: rgba(255,255,255,.9);
                 --primary-text-color: rgba(255,255,255,.9);
                 --mdc-button-outline-color: rgba(255,255,255,.9);
                 --mdc-typography-button-font-size: 1.3vw;
+                --paper-input-container-shared-input-style_-_font-size:30px;
               }
               ha-card{
                 background: transparent;
                 box-shadow: unset;
                 padding: 0 !important;
+                border: unset;
               }
               ha-label-badge-icon{
                 position: unset;
@@ -1614,6 +1626,7 @@ views:
               }
               .card-header{
                 text-align: center;
+                margin: 20px 0 10px 0;
               }
               .label-badge{
                 background: transparent;
@@ -1622,6 +1635,15 @@ views:
               }
               .label-badge .value{
                 height: 100%;
+              }
+              .actions button{
+                border: 1px solid white;
+                background: transparent;
+                width: 25%;
+              }
+              .pad button{
+                border: 1px solid white;
+                background: transparent;
               }
               ha-icon{
                 width: 100%;
@@ -1709,6 +1731,7 @@ views:
                     background: transparent;
                     box-shadow: unset;
                     padding: 0 !important;
+                    border: unset;
               }
               bar-card-value{
                 margin: 4px 10px;
@@ -1786,6 +1809,7 @@ views:
                     background: transparent;
                     box-shadow: unset;
                     padding: 0 !important;
+                    border: unset;
               }
 
 
@@ -1841,6 +1865,7 @@ views:
                     background: transparent;
                     box-shadow: unset;
                     padding: 0 !important;
+                    border: unset;
               }
 
 
@@ -1920,6 +1945,7 @@ views:
                 box-shadow: none !important;
                 border-radius: 1vw;
                 font-size: 1.2vw !important;
+                border: unset;
               }
               .forecast{
                 padding: 0 2.5%;

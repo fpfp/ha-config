@@ -12,8 +12,8 @@ all_lights:
       - switch.shellyswitch25_c4e381_channel_2
       - switch.shellyswitch25_c467b1_channel_1
       - switch.shellyswitch25_c467b1_channel_2
-      - light.33882720600194e74bc3
-
+      - light.lampada
+      - light.led
 
 boxroom_lights:
     name: Luci ripostiglio

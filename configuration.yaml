@@ -7,7 +7,6 @@
 # Configure a default setup of Home Assistant (frontend, api, etc)
 #default_config:
 person:
-updater:
 zone:
 zeroconf:
 system_health:
@@ -106,7 +105,6 @@ recorder:
   commit_interval: 30
   exclude:
     domains:
-      - updater
       - zone
       - sun
       - frontend
@@ -154,7 +152,6 @@ history:
   exclude:
     domains:
       - automation
-      - updater
       - sun
       - group
     entities:
@@ -277,23 +274,8 @@ sensor:
       - type: disk_use_percent
       - type: processor_use
 
-# https://www.home-assistant.io/integrations/version/
-  - platform: version
-    name: hass_version_installed
-
-  - platform: version
-    name: hass_version_latest
-    source: docker
-
-# https://www.home-assistant.io/integrations/filesize/
-  - platform: filesize
-    file_paths:
-      - /config/home-assistant_v2.db
-
-# https://www.home-assistant.io/integrations/dnsip/
-  - platform: dnsip
-
-# https://www.home-assistant.io/integrations/dht/
+# https://community.home-assistant.io/t/dht-sensor-custom-components/390428/38
+# https://github.com/richardzone/homeassistant-dht
   - platform: dht
     sensor: DHT22
     pin: 4
@@ -301,43 +283,8 @@ sensor:
       - temperature
       - humidity
 
-# https://www.home-assistant.io/integrations/uptime/
-# https://community.home-assistant.io/t/uptime-in-days-hours-and-minutes/180916/21
-  - platform: uptime
-
-
-# https://www.home-assistant.io/integrations/miflora/
-  - platform: miflora
-    name: miflora_1
-    mac: "C4:7C:8D:6B:FF:96"
-    force_update: true
-    median: 3
-    go_unavailable_timeout: 43200
-    monitored_conditions:
-      - moisture
-      - light
-      - temperature
-      - conductivity
-      - battery
-
-  - platform: miflora
-    name: miflora_2
-    mac: "C4:7C:8D:6B:AB:EC"
-    force_update: true
-    median: 3
-    go_unavailable_timeout: 43200
-    monitored_conditions:
-      - moisture
-      - light
-      - temperature
-      - conductivity
-      - battery      
-
-
   - platform: template
     sensors:
-
-
       # extract temperature from weather
       weather_temperature:
         friendly_name: "Temperatura Esterna"
@@ -361,42 +308,6 @@ sensor:
       date_string:
         friendly_name: "Full Date"
         value_template: "{{ states('sensor.day') }}, {{ strptime(states('sensor.date'), '%Y-%m-%d').day }} {{ states('sensor.month') }} {{ now().year }}"
-
-
-
-       # https://community.home-assistant.io/t/tuya-local-with-energy-monitoring-and-without-tuya-convert/173564
-
-
-#      smartplug_01_voltage:
-#        friendly_name: "Presa Asciugatrice - Voltaggio"
-#        unit_of_measurement: 'V'
-#        value_template: "{{ states.switch.smartplug_01.attributes.voltage }}"
-      
-#      smartplug_01_current:
-#        friendly_name: "Presa Asciugatrice - Potenza"
-#        unit_of_measurement: 'mA'
-#        value_template: "{{ states.switch.smartplug_01.attributes.current }}"
-      
-      smartplug_01_consumption:
-        friendly_name: "Presa Asciugatrice - Consumo"
-        unit_of_measurement: 'W'
-        value_template: "{{ states.switch.smartplug_01.attributes.current_consumption }}"
-
-#      smartplug_02_voltage:
-#        friendly_name: "Presa kiosk - Voltaggio"
-#        unit_of_measurement: 'V'
-#        value_template: "{{ states.switch.smartplug_02.attributes.voltage }}"
-
-#      smartplug_02_current:
-#        friendly_name: "Presa kiosk - Potenza"
-#        unit_of_measurement: 'mA'
-#        value_template: "{{ states.switch.smartplug_02.attributes.current }}"
-
-      smartplug_02_consumption:
-        friendly_name: "Presa Kiosk - Consumo"
-        unit_of_measurement: 'W'
-        value_template: "{{ states.switch.smartplug_02.attributes.current_consumption }}"
-
 
 
 
@@ -448,16 +359,16 @@ sensor:
         unit_of_measurement: "W"
         value_template: >-
           {{ 
-            states('sensor.shelly1_c42478') | float 
-          + states('sensor.shelly1_c4263c') | float 
-          + states('sensor.shelly1_c4eeb1') | float
-          + states('sensor.shelly1_f3a160') | float
-          + states('sensor.shellyswitch25_c467b1_channel_1_power') | float
-          + states('sensor.shellyswitch25_c467b1_channel_2_power') | float
-          + states('sensor.shellyswitch25_c4e381_channel_1_power') | float
-          + states('sensor.shellyswitch25_c4e381_channel_2_power') | float
-          + states('sensor.shellyswitch25_e5a302_channel_1_power') | float
-          + states('sensor.shellyswitch25_e5a302_channel_2_power') | float          
+            states('sensor.shelly1_c42478') | float(0) 
+          + states('sensor.shelly1_c4263c') | float(0) 
+          + states('sensor.shelly1_c4eeb1') | float(0)
+          + states('sensor.shelly1_f3a160') | float(0)
+          + states('sensor.shellyswitch25_c467b1_channel_1_power') | float(0)
+          + states('sensor.shellyswitch25_c467b1_channel_2_power') | float(0)
+          + states('sensor.shellyswitch25_c4e381_channel_1_power') | float(0)
+          + states('sensor.shellyswitch25_c4e381_channel_2_power') | float(0)
+          + states('sensor.shellyswitch25_e5a302_channel_1_power') | float(0)
+          + states('sensor.shellyswitch25_e5a302_channel_2_power') | float (0)         
           }}
 
 
@@ -619,57 +530,6 @@ alarm_control_panel:
 
 
 ####################################################
-#                   Notify                         #
-#                                                  #
-#                                                  #
-####################################################
-# https://www.home-assistant.io/integrations/notify/
-# https://www.home-assistant.io/integrations/pushbullet/#notifications
-# https://www.home-assistant.io/integrations/simplepush/
-notify:
-  - name: pbf
-    platform: pushbullet
-    api_key: !secret pushbullet_key
-  - name: simplepush_fp
-    platform: simplepush
-    device_key: !secret simplepush_key
-
-
-####################################################
-#                   Local Tuya                     #
-#                                                  #
-#                                                  #
-####################################################
-# https://github.com/rospogrigio/localtuya
-localtuya:
-  - host: !secret ip_sp_dryer
-    device_id: !secret tuya_plug_01_id
-    local_key: !secret tuya_plug_01_key
-    friendly_name: Presa Asciugatrice
-    protocol_version: "3.3"
-    entities:
-      - platform: switch
-        friendly_name: Presa Asciugatrice
-        id: 1
-        current: 18
-        current_consumption: 19
-        voltage: 20
-  - host: !secret ip_sp_kiosk
-    device_id: !secret tuya_plug_02_id
-    local_key: !secret tuya_plug_02_key
-    friendly_name: Presa Kiosk
-    protocol_version: "3.3"
-    entities:
-      - platform: switch
-        friendly_name: Presa Kiosk
-        id: 1
-        current: 18
-        current_consumption: 19
-        voltage: 20
-
-
-
-####################################################
 #                       API                        #
 #                                                  #
 #                                                  #
@@ -688,74 +548,30 @@ api:
 alexa:
   # Skill Scope
   smart_home:
+    locale: it-IT
     filter: 
       include_entities:
         - switch.tvpower
+        - climate.condizionatore_aria_zona_notte
     entity_config:
       switch.tvpower:
         name: SAMSUNG TV UE40H6400
         display_categories: TV
-
-
+#      climate.condizionatore_aria_zona_notte
+#        name: Clima Corridoio
+#        display_categories: THERMOSTAT
+#      climate.condizionatore_aria_soggiorno
+#        name: Clima Soggiorno
+#        display_categories: THERMOSTAT
 
 ####################################################
 #                   Spotify                        #
 #                                                  #
 #                                                  #
 ####################################################
-# https://www.home-assistant.io/integrations/spotify/
-spotify:
-  client_id: !secret spotify_client_id
-  client_secret: !secret spotify_client_secret
-
-
 spotcast:
   sp_dc: !secret spotify_spotcast_dc
   sp_key: !secret spotify_spotcast_key
-
-#homekit:
-
-#- port: 51827
-#  name: HASS Bridge ALCS
-#  auto_start: true
-#  mode: bridge
-#  filter:
-#    include_domains:
-#      - alarm_control_panel
-#      - light
-#      - cover
-#    include_entity_globs:
-#      - binary_sensor.*_occupancy
-#    include_entities:
-#      - sensor.xiaomi_t_h_ble_humidity
-#      - sensor.xiaomi_t_h_ble_temperature
-#    exclude_entities:
-#      - switch.tvpower
-#  entity_config:
-#    alarm_control_panel.home_alarm:
-#      code: !secret alarm_code
-#    switch.02283024dc4f225abec8:
-#      type: outlet
-#    switch.bf6851b011ec5a759drz6s:
-#      type: outlet
-#    switch.bf99cef22ec6683bbbnhjv
-#      type: outlet
-#    switch.presa_asciugatrice
-#      type: outlet
-#    switch.presa_lavastoviglie
-#      type: outlet
-#- port: 52827
-#  name: HASS Bridge MP 
-#  auto_start: true
-#  mode: accessory
-#  filter:
-#    include_entities:
-#      - media_player.samsung_tv_ue40h6400
-#  entity_config:
-#      media_player.samsung_tv_ue40h6400:
-#      name: Samsung TV UE40H6400
-#      feature_list:
-#        - feature: on_off
 
 
 
@@ -765,12 +581,7 @@ spotcast:
 #                                                  #
 ####################################################
 # https://github.com/thomasloven/hass-browser_mod
-browser_mod:
-  devices:
-    d2fc860c-16379d34:
-      name: "kiosk"
-  disable:
-    - all
+
 
 
 ####################################################
@@ -782,42 +593,43 @@ lovelace:
   mode: yaml
   resources:
       # https://github.com/custom-cards/button-card
-    - url: /local/js/button-card.js?v=3.4.0
+    - url: /local/js/button-card.js?v=3.4.2
       type: module
       # https://github.com/custom-cards/bar-card
     - url: /local/js/bar-card.js?v=3.2.0
       type: module
       # https://github.com/thomasloven/lovelace-card-mod
-    - url: /local/js/card-mod.js?v=2.0.3
+    - url: /local/js/card-mod.js?v=3.2.0
       type: module
       # https://github.com/kalkih/mini-graph-card
-    - url: /local/js/mini-graph-card-bundle.js?v=0.9.4
+    - url: /local/js/mini-graph-card-bundle.js?v=0.11.0
       type: module
       # https://github.com/kalkih/simple-weather-card
-    - url: /local/js/simple-weather-card-bundle.js?v=0.8.1
+    - url: /local/js/simple-weather-card-bundle.js?v=0.8.3
       type: module
       # https://github.com/kalkih/mini-media-player
-    - url: /local/js/mini-media-player-bundle.js?v=1.11.0
+    - url: /local/js/mini-media-player-bundle.js?v=1.16.5
       type: module
       # https://github.com/DBuit/Homekit-panel-card
-    - url: /local/js/homekit-panel-card.js?v=0.5.9
+    - url: /local/js/homekit-panel-card.js?v=0.6.3
       type: module    
       # https://github.com/DBuit/light-popup-card
-    - url: /local/js/light-popup-card.js?v=0.4.8.4
+    - url: /local/js/light-popup-card.js?v=0.5.2
       type: module
       # https://github.com/custom-cards/spotify-card
-    - url: /local/js/spotify-card.js?v=2.3.5
+    - url: /local/js/spotify-card.js?v=2.4.0
       type: module
       # https://github.com/bramkragten/weather-card
     - url: /local/js/weather-card.js?v=1.5.0
       type: module
-      # https://github.com/JumpMaster/custom-lovelace/tree/master/alarm_control_panel-card
-    - url: /local/js/alarm-control-panel-card.js?v=1.0
+      # https://github.com/jcooper-korg/AlarmPanel
+    - url: /local/js/alarm-control-panel-card.js?v=2.0
       type: module
       # https://github.com/lukevink/home-assistant-custom-iframe
     - url: /local/js/custom-iframe-card.js?v=1.0
       type: module
-
+    - url: /local/style.css?v=1.0
+      type: css
     
   dashboards:
     dashboard-kiosk: # Needs to contain a hyphen (-)
